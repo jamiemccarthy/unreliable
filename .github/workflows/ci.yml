@@ -1,0 +1,31 @@
+name: CI
+
+on: push
+
+jobs:
+  test:
+    name: CI
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby-version: ['2.5', '2.7', '3.1'] # TODO: enable 2.6, 3.0 (disabled for performance while developing)
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+
+    - name: Install gems
+      run: |
+        gem install bundler
+        bundle install
+
+    - name: Run tests with appraisal
+      run: bundle exec appraisal rake test
+
+    - name: Run rubocop
+      run: rubocop
