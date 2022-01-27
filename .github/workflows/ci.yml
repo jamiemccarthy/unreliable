@@ -4,11 +4,14 @@ on: push
 
 jobs:
   test:
-    name: CI
+    name: CI for Ruby ${{ matrix.ruby-version }} / ActiveRecord ${{ matrix.activerecord-version }}
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 2
+      fail-fast: false
       matrix:
-        ruby-version: ['2.5', '2.7', '3.1'] # TODO: enable 2.6, 3.0 (disabled for performance while developing)
+        ruby-version: ['2.7', '3.1'] # TODO: enable 3.0 (disabled for performance while developing)
+        activerecord-version: ['5.0', '5.2', '6.1', '7.0'] # TODO: enable 5.1, 6.0 (again, performance) -- used Appraisal to generate gemfiles
 
     steps:
     - name: Checkout
@@ -20,12 +23,19 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
 
     - name: Install gems
+      env:
+        MATRIX_ACTIVERECORD_VERSION: ${{ matrix.activerecord-version }}
       run: |
+        export BUNDLE_GEMFILE="${GITHUB_WORKSPACE}/gemfiles/activerecord_${MATRIX_ACTIVERECORD_VERSION}.gemfile"
         gem install bundler
         bundle install
 
-    - name: Run tests with appraisal
-      run: bundle exec appraisal rake test
+    - name: Run tests
+      env:
+        MATRIX_ACTIVERECORD_VERSION: ${{ matrix.activerecord-version }}
+      run: |
+        export BUNDLE_GEMFILE="${GITHUB_WORKSPACE}/gemfiles/activerecord_${MATRIX_ACTIVERECORD_VERSION}.gemfile"
+        bundle exec rake test
 
     - name: Run rubocop
       run: rubocop

@@ -4,11 +4,9 @@
 
 module Unreliable
   module BuildOrder
-
     def build_order(arel)
       super
-      arel.order('RAND()') # TODO: for postgres, RANDOM()
+      arel.order("RAND()") # TODO: for postgres, RANDOM()
     end
-
   end
 end
