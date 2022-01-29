@@ -31,6 +31,23 @@ rubocop
 
 tests!
 
+# Development
+
+```
+Start with 1-line Gemfile `gem "rails", "~> x.y"`, bundle install, then
+# $ bundle exec rails new . --skip-javascript --skip-webpack-install --skip-sprockets --skip-turbolinks --skip-jbuilder --skip-spring
+Add to Gemfile test block: gem "unreliable", path: "../unreliable", bundle install again
+# $ bundle exec rails generate model post title:string body:text
+# $ RAILS_ENV=test bundle exec rails db:migrate
+# $ RAILS_ENV=test bundle exec rails c
+# Loading test environment (Rails 7.0.1)
+# 3.0.1 :001 > puts Post.where(title: "abc").to_sql
+#    (0.7ms)  SELECT sqlite_version(*)
+# SELECT "posts".* FROM "posts" WHERE "posts"."title" = 'abc' ORDER BY RAND()
+```
+
+The CI matrix gemfiles are built with `bundle exec appraisal install`
+
 # See also
 
 

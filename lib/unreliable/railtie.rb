@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "active_record/relation"
+require "active_record/relation/query_methods"
+
 module Unreliable
   class Railtie < Rails::Railtie
     config.to_prepare do
@@ -11,7 +14,7 @@ module Unreliable
         # TODO: check earliest Rails version that supports this
         # https://edgeapi.rubyonrails.org/classes/ActiveSupport/LazyLoadHooks.html
         ActiveSupport.on_load(:active_record) do
-          ::ActiveRecord::QueryMethods.prepend Unreliable::BuildOrder
+          ::ActiveRecord::QueryMethods.prepend ::Unreliable::BuildOrder
         end
       end
     end
