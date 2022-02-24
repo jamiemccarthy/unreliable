@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   ]
   s.homepage = "https://github.com/jamiemccarthy/unreliable"
 
-  s.required_ruby_version = ">= 2.5"
+  s.required_ruby_version = ">= 2.6"
 
   s.add_dependency "activerecord", ">= 5.0"
 

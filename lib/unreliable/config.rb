@@ -2,12 +2,10 @@
 
 module Unreliable
   class Config
+    attr_reader :enabled
+
     def self.setup!
       @enabled = true
-    end
-
-    def self.enabled
-      @enabled
     end
 
     def self.disable

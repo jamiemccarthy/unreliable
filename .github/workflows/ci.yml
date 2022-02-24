@@ -10,7 +10,7 @@ jobs:
       max-parallel: 2
       fail-fast: false
       matrix:
-        ruby-version: ['2.7', '3.1'] # TODO: enable 3.0 (disabled for performance while developing)
+        ruby-version: ['2.7', '3.1'] # TODO: enable 2.6, 3.0 (disabled for performance while developing)
         activerecord-version: ['5.0', '5.2', '6.1', '7.0'] # TODO: enable 5.1, 6.0 (again, performance) -- used Appraisal to generate gemfiles
 
     steps:
