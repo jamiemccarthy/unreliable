@@ -1,5 +1,7 @@
 # unreliable
 
+![CI workflow](https://github.com/github/docs/actions/workflows/ci.yml/badge.svg)
+
 In a Rails test environment, patches ActiveRecord to have a final ORDER BY clause that returns results in a random order.
 
 If the specified order for any relation is ambiguous, including if no order at all is specified, relational databases like [Postgres](https://www.postgresql.org/docs/14/queries-order.html) and MySQL do not define the resulting order. However, in practice they often happen to return the same order in many cases.
