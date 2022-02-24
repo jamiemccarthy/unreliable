@@ -1,6 +1,6 @@
 # unreliable
 
-![CI workflow](https://github.com/github/docs/actions/workflows/ci.yml/badge.svg)
+![CI workflow](https://github.com/jamiemccarthy/unreliable/actions/workflows/ci.yml/badge.svg)
 
 In a Rails test environment, patches ActiveRecord to have a final ORDER BY clause that returns results in a random order.
 
