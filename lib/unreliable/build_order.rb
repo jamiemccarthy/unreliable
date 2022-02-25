@@ -7,7 +7,7 @@ require "active_record/connection_adapters/abstract_adapter"
 module Unreliable
   module BuildOrder
     def build_order(arel)
-      super
+      super(arel)
 
       return unless Unreliable::Config.enabled?
 
