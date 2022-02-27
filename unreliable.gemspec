@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec"
   s.add_development_dependency "rubocop", "~> 1.25"
   s.add_development_dependency "simplecov", "~> 0.21"
+  s.add_development_dependency "sqlite3", "~> 1.4"
   s.add_development_dependency "standard", "~> 1.7"
 
   s.metadata = {

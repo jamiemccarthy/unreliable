@@ -82,3 +82,7 @@ bundle
 .rspec-local
 spec/examples.txt
 specs.out
+
+### combustion
+
+spec/internal/db/*.sqlite
