@@ -2,9 +2,10 @@
 
 require "active_record/relation"
 require "active_record/relation/query_methods"
+require "rails/railtie"
 
 module Unreliable
-  class Railtie < Rails::Railtie
+  class Railtie < ::Rails::Railtie
     config.to_prepare do
       Unreliable::Config.setup!
     end
@@ -12,7 +13,7 @@ module Unreliable
     initializer "unreliable.build_order_patch" do
       if Rails.env.test?
         ActiveSupport.on_load(:active_record) do
-          ::ActiveRecord::QueryMethods.prepend ::Unreliable::BuildOrder
+          ::ActiveRecord::Relation.prepend ::Unreliable::BuildOrder
         end
       end
     end
