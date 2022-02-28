@@ -19,17 +19,17 @@ jobs:
           # Rails 5.x is unlikely ever to support ruby >= 3.0
           # https://github.com/rails/rails/issues/40938#issuecomment-751569171
           - ruby-version: '3.0'
-            activerecore-version: '5.0'
+            activerecord-version: '5.0'
           - ruby-version: '3.0'
-            activerecore-version: '5.1'
+            activerecord-version: '5.1'
           - ruby-version: '3.0'
-            activerecore-version: '5.2'
+            activerecord-version: '5.2'
           - ruby-version: '3.1'
-            activerecore-version: '5.0'
+            activerecord-version: '5.0'
           - ruby-version: '3.1'
-            activerecore-version: '5.1'
+            activerecord-version: '5.1'
           - ruby-version: '3.1'
-            activerecore-version: '5.2'
+            activerecord-version: '5.2'
 
 
     steps:
