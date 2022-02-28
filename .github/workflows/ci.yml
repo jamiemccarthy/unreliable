@@ -4,19 +4,27 @@ on: push
 
 jobs:
   test:
-    name: CI for Ruby ${{ matrix.ruby-version }} / ActiveRecord ${{ matrix.activerecord-version }}
+    name: CI Ruby ${{ matrix.ruby-version }} AR ${{ matrix.activerecord-version }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 2
       fail-fast: false
       matrix:
         ruby-version: ['2.7', '3.1']
-        activerecord-version: ['5.2', '6.1', '7.0']
+        activerecord-version: ['5.0', '5.2', '6.1', '7.0']
         include:
           - ruby-version: '2.6'
             activerecord-version: '5.0'
+          - ruby-version: '3.0'
+            activerecord-version: '5.0'
           - ruby-version: '2.6'
             activerecord-version: '5.1'
+          - ruby-version: '3.0'
+            activerecord-version: '5.1'
+          - ruby-version: '2.6'
+            activerecord-version: '5.2'
+          - ruby-version: '3.0'
+            activerecord-version: '5.2'
           - ruby-version: '3.0'
             activerecord-version: '6.0'
 
