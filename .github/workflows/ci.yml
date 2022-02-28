@@ -12,6 +12,25 @@ jobs:
       matrix:
         ruby-version: ['2.6', '2.7', '3.0', '3.1']
         activerecord-version: ['5.0', '5.1', '5.2', '6.0', '6.1', '7.0']
+        exclude:
+          # Rails 7.0's gemspec requires ruby >= 2.7
+          - ruby-version: '2.6'
+            activerecord-version: '7.0'
+          # Rails 5.x is unlikely ever to support ruby >= 3.0
+          # https://github.com/rails/rails/issues/40938#issuecomment-751569171
+          - ruby-version: '3.0'
+            activerecore-version: '5.0'
+          - ruby-version: '3.0'
+            activerecore-version: '5.1'
+          - ruby-version: '3.0'
+            activerecore-version: '5.2'
+          - ruby-version: '3.1'
+            activerecore-version: '5.0'
+          - ruby-version: '3.1'
+            activerecore-version: '5.1'
+          - ruby-version: '3.1'
+            activerecore-version: '5.2'
+
 
     steps:
     - name: Checkout
