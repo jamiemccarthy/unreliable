@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-require "rake/testtask"
+begin
+  require "rspec/core/rake_task"
 
-task default: "test"
+  RSpec::Core::RakeTask.new(:spec)
 
-Rake::TestTask.new do |task|
-  task.libs << "lib"
+  task default: :spec
+rescue LoadError
+  # no rspec available
 end
