@@ -39,7 +39,13 @@ Tests for MySQL and Postgres.
 
 Is there a way to patch test blocks to run them multiple times with different orders (pk asc, desc, rand)? Worth digging into RSpec for this maybe.
 
-# Development
+# Testing
+
+The CI matrix gemfiles are built with `bundle exec appraisal install`. They ensure the tests run against every compatible minor version combination of both Ruby and Rails.
+
+Testing against ActiveRecord is done with Combustion, which stands up a local single-table SQLite database and an ActiveRecord-based model for it. This gives us more reliable coverage than mocking unit tests within ActiveRecord itself.
+
+Some initial testing was done against a small but real Rails app locally, which looked like this:
 
 ```
 Start with 1-line Gemfile `gem "rails", "~> x.y"`, bundle install, then
@@ -57,7 +63,9 @@ Loading test environment (Rails 7.0.1)
 SELECT "posts".* FROM "posts" WHERE "posts"."title" = 'abc' ORDER BY RAND()
 ```
 
-The CI matrix gemfiles are built with `bundle exec appraisal install`. When it's necessary to add new minor versions of ActiveRecord or Ruby, update the Appraisals file and run `bundle exec appraisal update` as well as the install, and update the matrix in the ci.yml workflow.
+# Development
+
+When it's necessary to add new minor versions of ActiveRecord or Ruby, update the Appraisals file and run `bundle exec appraisal update` as well as the install, and update the matrix in the ci.yml workflow.
 
 # See also
 
