@@ -9,6 +9,10 @@ RSpec.describe Thing do
     expect(Thing.where(word: "foo").to_sql).to end_with("ORDER BY RANDOM()")
   end
 
+  it "adds randomness to existing order" do
+    expect(Thing.order(:word).to_sql).to end_with('ORDER BY "things"."word" ASC, RANDOM()')
+  end
+
   it "respects a disable block" do
     Unreliable::Config.disable do
       expect(Thing.where(word: "foo").to_sql).to_not end_with("ORDER BY RANDOM()")

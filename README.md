@@ -35,7 +35,7 @@ Other ways you can order a relation ambiguously include:
 
 # TODO
 
-tests!
+Tests for MySQL and Postgres.
 
 Is there a way to patch test blocks to run them multiple times with different orders (pk asc, desc, rand)? Worth digging into RSpec for this maybe.
 
