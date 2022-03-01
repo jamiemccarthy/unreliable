@@ -1,6 +1,7 @@
 # unreliable
 
 ![CI workflow](https://github.com/jamiemccarthy/unreliable/actions/workflows/ci.yml/badge.svg)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 
 In a Rails test environment, Unreliable patches ActiveRecord to have a final ORDER BY clause that returns results in a random order.
 
