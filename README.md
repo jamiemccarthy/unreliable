@@ -1,19 +1,19 @@
-# unreliable
+# Unreliable
 
 ![CI workflow](https://github.com/jamiemccarthy/unreliable/actions/workflows/ci.yml/badge.svg)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 
-In a Rails test environment, Unreliable patches ActiveRecord to have a final ORDER BY clause that returns results in a random order.
+Relational databases do not guarantee the order results are returned in, unless an ORDER BY clause makes it unambiguous. However, in practice, they often happen to return the same order most of the time.
 
-If the specified order for any relation is ambiguous, including if no order at all is specified, relational databases do not define the resulting order in which rows are returned. This is true for Postgres, MySQL, and SQLite.
+If your Rails code relies on that accidental ordering, that's a bug. And it's a bug that test suites often don't catch. Your tests may be passing accidentally.
 
-However, in practice databases often happen to return the same order in most cases.
+In a Rails test environment, Unreliable patches ActiveRecord to always have a final ORDER BY clause that returns results in a random order.
 
-Authors of tests will often rely on this unreliable ordering, which leads to tests passing accidentally.
+With Unreliable installed, every ActiveRecord relation invoked by the test suite will have any ambiguity replaced with randomness. Thus, tests that rely on the ordering of at least two records will typically break at least half the time.
 
-With Unreliable installed, every ActiveRecord relation invoked by the test suite will have a final ORDER BY clause that replaces the ambiguity with randomness. Thus tests that rely on the ordering of at least two records will typically break at least half the time.
+If you install Unreliable and your test suite starts failing, but only sometimes, that's your cue to check which relations and scopes your tests are using that you believe to be unambiguously ordered, but actually aren't.
 
-It does nothing outside of test environments, and there is intentionally no way to enable Unreliable in any other environment.
+Unreliable does nothing outside of test environments, and there is intentionally no way to enable Unreliable in any other environment.
 
 # Implementation
 
@@ -21,9 +21,11 @@ Unreliable patches `ActiveRecord::QueryMethods#build_arel`, the point where an A
 
 This means that the ORDER BY applies to not just SELECTs but e.g. delete_all and update_all. It also applies within subqueries.
 
-By always appending the random order, we ensure unreliable ordering for relations that have no order at all, and also for relations with an ambiguous order. For example, ordering by a non-unique column, or a combination of multiple columns which together are non-unique.
+By always appending the random order, we ensure unreliable ordering for relations that have no order at all, and also for relations with an ambiguous order. For example, ordering by a non-unique column, or a combination of multiple columns which together remain non-unique.
 
 The patch is only applied when `Rails.env.test?`, and that boolean is also checked on every invocation to make certain it has no effect in any other environment.
+
+`Unreliable::Config.disable do ... end` will turn it off for a block.
 
 # Fun trivia
 
