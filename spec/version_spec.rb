@@ -8,6 +8,6 @@ RSpec.describe Unreliable, "version" do
   end
 
   it "is correct" do
-    expect(Unreliable::VERSION).to start_with "0.0."
+    expect(Unreliable::VERSION).to start_with "0.1."
   end
 end
