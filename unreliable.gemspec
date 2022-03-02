@@ -19,16 +19,16 @@ Gem::Specification.new do |s|
     "rubygems_mfa_required" => "true"
   }
   s.files = Dir["lib/**/*"] +
-            Dir["gemfiles/*"] +
-            Dir["spec/**"] + [
-              "Appraisals",
-              "CHANGELOG.md",
-              "CODE_OF_CONDUCT.md",
-              "Gemfile",
-              "LICENSE",
-              "Rakefile",
-              "README.md"
-            ]
+    Dir["gemfiles/*"] +
+    Dir["spec/**"] + [
+      "Appraisals",
+      "CHANGELOG.md",
+      "CODE_OF_CONDUCT.md",
+      "Gemfile",
+      "LICENSE",
+      "Rakefile",
+      "README.md"
+    ]
 
   s.required_ruby_version = ">= 2.6"
 
