@@ -32,14 +32,14 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 2.6"
 
-  s.add_dependency "activerecord", ">= 5.0"
-  s.add_dependency "railties", ">= 5.0"
+  s.add_dependency "activerecord", ">= 5.0", "< 8.0"
+  s.add_dependency "railties", ">= 5.0", "< 8.0"
 
   s.add_development_dependency "appraisal", "~> 2.4"
   s.add_development_dependency "bundler", "~> 2.1"
   s.add_development_dependency "combustion", "~> 1.3"
   s.add_development_dependency "rake", "~> 13.0"
-  s.add_development_dependency "rspec"
+  s.add_development_dependency "rspec", "~> 3.0"
   s.add_development_dependency "rubocop", "~> 1.25"
   s.add_development_dependency "simplecov", "~> 0.21"
   s.add_development_dependency "sqlite3", "~> 1.4"
