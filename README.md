@@ -2,6 +2,7 @@
 
 ![CI workflow](https://github.com/jamiemccarthy/unreliable/actions/workflows/ci.yml/badge.svg)
 ![Gem version](https://img.shields.io/gem/v/unreliable)
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa)](code_of_conduct.md)
 
 **Unreliable makes your ActiveRecord scopes and test suite better, by forcing your tests to not rely on ambiguous ordering.**
