@@ -18,7 +18,7 @@ group :test do
 end
 ```
 
-Then `bundle install` and run your test suite six times, looking for new failures.
+Then `bundle install` and run your test suite repeatedly, maybe 6-8 times, looking for new failures.
 
 ## The problem
 
@@ -28,7 +28,7 @@ Choosing a good ORDER is harder than it seems. And you can get it wrong silently
 
 If your Rails code relies on that accidental ordering, that's a bug in your app. Or sometimes ambiguous order is fine for your app's purposes, but your tests rely on it. Either way, your tests are passing when they should be failing.
 
-## The fix
+## The test
 
 In a Rails test environment, Unreliable patches ActiveRecord to always have a final ORDER BY clause that returns results in a random order.
 
@@ -36,7 +36,47 @@ With Unreliable installed, every ActiveRecord relation invoked by the test suite
 
 If you install Unreliable and your test suite starts failing, but only sometimes, that tells you to check your app's relations and scopes, and check your tests.
 
-Even your relations with an order may have an ambiguous order. See "Fun trivia" below.
+Even your relations with an order may have an ambiguous order. See "Ordering trivia" below.
+
+## The fixes
+
+When Unreliable turns up a new test failure, it's for one of two reasons. Either your test needs to stop relying on order, or your app needs to specify order better.
+
+### Incorrect test
+
+Take a look at what you're testing. If you're testing a method or an endpoint that returns a list whose order doesn't matter and isn't documented, you may have written it to expect the order that was returned the first time you ran it. This often happens with fixtures.
+
+Make your test accept all correct answers. For example, sort the method's response before comparing.
+
+### Incorrect app
+
+If your app should be returning results in a particular order, and now with Unreliable it sometimes does not, your test is correct and your app is wrong. Specify order rigorously in your app.
+
+Maybe you've defined an ordering this way:
+
+```
+  class Book
+    scope :reverse_chron, -> { order(year_published: :desc) }
+  end
+```
+
+When you meant to define it unambiguously:
+
+```
+  class Book
+    scope :reverse_chron, -> { order(year_published: :desc, title: :desc) }
+  end
+```
+
+Or, if `title` is not unique:
+
+```
+  class Book
+    scope :reverse_chron, -> { order(year_published: :desc, title: :desc, id: :desc) }
+  end
+```
+
+This example is obviously wrong because many books are published each year, but this error can occur at any time granularity.
 
 ## Requirements
 
@@ -60,7 +100,7 @@ The patch is only applied when `Rails.env.test?`, and that boolean is also check
 
 `Unreliable::Config.disable do ... end` will turn it off for a block.
 
-## Fun trivia
+## Ordering trivia
 
 The most common ambiguous ordering is an ORDER BY one column that is not unique, perhaps a timestamp.
 
