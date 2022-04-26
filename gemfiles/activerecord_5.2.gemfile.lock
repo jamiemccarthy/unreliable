@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    unreliable (0.1.1)
+    unreliable (0.1.2)
       activerecord (>= 5.0, < 8.0)
       railties (>= 5.0, < 8.0)
 
