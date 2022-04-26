@@ -125,6 +125,12 @@ bundle install
 bundle exec appraisal install
 ```
 
+Run Unreliable's linter with:
+
+```
+bundle exec standardrb
+```
+
 Then you can run Unreliable's tests with:
 
 ```
