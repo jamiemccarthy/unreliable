@@ -5,7 +5,7 @@
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa)](code_of_conduct.md)
 
-**The `unreliable` gem forces your ActiveRecord tests not to rely on ambiguous ordering. This makes your app and its tests better.**
+**The `unreliable` gem forces your ActiveRecord tests not to rely on ambiguous ordering. This makes your app and its tests more robust.**
 
 ## Installation
 
@@ -19,23 +19,25 @@ group :test do
 end
 ```
 
-The next time your test suite runs, it may emit new errors and failures. If so, great! Instructions are below.
+The next time your test suite runs, it may emit new errors and failures. If so, great!
 
 ## The problem with orders
 
-Here's an [open secret](#references): **relational databases do not guarantee the order results are returned in, without a well-chosen `ORDER BY` clause.**
+Here's an [open secret](#references): **relational databases do not guarantee the order results are returned in, without a thorough `ORDER BY` clause.**
 
-Sometimes we think we specified an unambiguous order, but didn't. Often with timestamps. And the test suite will stay silent as long as our database just happens to return the same order.
+If all your ActiveRecord ordering is already unambiguous, great! `unreliable` will have no effect.
 
-If your Rails code relies on that accidental ordering, that's a bug in your app. Your tests are passing when they should be failing.
+But sometimes we think we specified an unambiguous order, but didn't. Maybe we ordered on timestamps, which are usually unique but sometimes not. And the test suite will stay silent as long as our database just happens to return the same order.
 
-Or, if ambiguous ordering is fine for your app's purposes, but your tests rely on a specific order, that's a bug in your tests. Your tests are incorrectly failing -- rarely -- and it's confusing and annoying.
+If ambiguous ordering is fine for your app's purposes, but your tests rely on a specific order, that's a bug in your tests. Your tests are incorrectly failing -- rarely -- which can be confusing and annoying.
 
-In both cases, `unreliable` exposes the problem by making your tests fail most of the time.
+Or, if your Rails code relies on that accidental ordering, that's a bug in your app. Your tests are passing when they should be failing.
+
+In both cases, `unreliable` exposes the problem by making those tests fail most of the time.
 
 ## Fixing the new failures
 
-When `unreliable` turns up a new test failure, you fix it in one of two ways. Either relax your test so it stops relying on order, or tighten up your app to specify order precisely. (In my company's app, it was about 50/50.)
+When `unreliable` turns up a new test failure, you fix it in one of two ways. Either relax your test so it stops relying on order, or tighten up your app to specify order rigorously. (In my company's app, it was about 50/50.)
 
 ### Relax a test
 
@@ -43,7 +45,7 @@ Take a look at what your test is checking. If you're testing a method or an endp
 
 * Make your test accept all correct answers. For example, sort an array in the method's response before comparing.
 
-* Help your test suite focus on what you're testing. If your fixtures' "latest" element could change because they don't specify a timestamp, that might be a distraction that's not relevant to how your app works, so you could assign the fixtures timestamps.
+* Help your test suite focus on what you're testing. If your fixtures' "latest" element could change because they don't specify a timestamp, that might be a distraction that's not relevant to how your app works, so you could assign timestamps to the fixtures.
 
 This makes your test suite more robust.
 
@@ -85,9 +87,11 @@ As of August 2022, this is all released versions of both that are currently supp
 
 ## Implementation
 
-**`unreliable` does exactly nothing outside of test environments. There is intentionally no way to enable `unreliable` in production, and there never will be.**
+`unreliable` does exactly nothing outside of test environments. There is intentionally no way to enable `unreliable` in production, and there never will be.
 
-In a Rails test environment, `unreliable` patches ActiveRecord to always have a final `ORDER BY` clause that returns results in a random order.
+In a Rails test environment, `unreliable` patches ActiveRecord to always append a final `ORDER BY` clause that returns results in a random order.
+
+Because it's appended, the existing ordering is not affected unless it is ambiguous.
 
 With `unreliable` installed, every ActiveRecord relation invoked by the test suite will have any ambiguity replaced with randomness. Tests that rely on the ordering of two records will break half the time. Tests with three or more break most of the time.
 
@@ -100,6 +104,8 @@ The patch is only applied when `Rails.env.test?`, and that boolean is also check
 ## Contributing
 
 Thoughts and suggestions are welcome. Please read the code of conduct, then create an issue or pull request on GitHub. If you just have questions, go ahead and open an issue, I'm pretty friendly.
+
+### Run the gem's tests
 
 To test locally, against the different versions of ActiveRecord, use Ruby 2.7, the only version currently compatible with all the ActiveRecord versions supported. Install the required gems with:
 
@@ -127,6 +133,8 @@ The GitHub CI workflow in `.github/` ensures those tests are also run against ag
 
 Testing against ActiveRecord is done with [Combustion](https://github.com/pat/combustion), which stands up a local single-table SQLite database and an ActiveRecord-based model for it. This gives more reliable coverage than mocking unit tests within ActiveRecord itself.
 
+### Experiment
+
 If you'd like to see `unreliable` in action on a small but real Rails app locally, you can do this:
 
 1. In a directory next to your `unreliable` working directory, create a `.ruby-version` of `2.7.6` and a 2-line `Gemfile`: `source "https://rubygems.org"`, `gem "rails", "~> 7.0"`
@@ -146,10 +154,6 @@ irb(main):002:0> Post.limit(5).delete_all
   Post Delete All (0.2ms)  DELETE FROM "posts" WHERE "posts"."id" IN (SELECT "posts"."id" FROM "posts" ORDER BY RANDOM() LIMIT ?)  [["LIMIT", 5]]
 => 0
 ```
-
-## Future development
-
-When new minor versions of ActiveRecord or Ruby are released, I will update the Appraisals file and run `bundle exec appraisal update` as well as the install, and update the matrix in the ci.yml workflow. There will be a patch-level release for these changes, even if no `unreliable` code changes are required.
 
 ## Ordering trivia
 
