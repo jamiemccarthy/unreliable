@@ -25,7 +25,7 @@ The next time your test suite runs, it may emit new errors and failures. If so, 
 
 Here's an [open secret](#references): **relational databases do not guarantee the order results are returned in, without a thorough `ORDER BY` clause.**
 
-If all your ActiveRecord ordering is already unambiguous, great! `unreliable` will have no effect.
+If all your ActiveRecord ordering is already unambiguous, congratulations! `unreliable` will have no effect.
 
 But sometimes we think we specified an unambiguous order, but didn't. Maybe we ordered on timestamps, which are usually unique but sometimes not. And the test suite will stay silent as long as our database just happens to return the same order.
 
