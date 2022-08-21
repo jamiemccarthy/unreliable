@@ -129,20 +129,22 @@ Testing against ActiveRecord is done with [Combustion](https://github.com/pat/co
 
 If you'd like to see `unreliable` in action on a small but real Rails app locally, you can do this:
 
-1. Start with a 1-line Gemfile: `gem "rails", "~> x.y"`
-2. `bundle install`, then:
-3. `bundle exec rails new . --skip-javascript --skip-webpack-install --skip-sprockets --skip-turbolinks --skip-jbuilder --skip-spring`
-4. Add to Gemfile test block: `gem "unreliable", path: "../unreliable"`
-5. `bundle install` again
-6. `bundle exec rails generate model post title:string body:text`
-7. `RAILS_ENV=test bundle exec rails db:migrate`
-8. `RAILS_ENV=test bundle exec rails c`
-9. You should see "Loading test environment" and the Rails console prompt. Then to test:
+1. In a directory next to your `unreliable` working directory, create a `.ruby-version` of `2.7.6` and a 2-line `Gemfile`: `source "https://rubygems.org"`, `gem "rails", "~> 7.0"`
+2. `bundle install && bundle exec rails new . --force`
+3. `echo 'gem "unreliable", path: "../unreliable"' >> Gemfile`
+4. `bundle install && bundle exec rails generate model post title:string body:text`
+5. `RAILS_ENV=test bundle exec rails db:migrate`
+6. `RAILS_ENV=test bundle exec rails c`
+7. You should see SQLite's `ORDER BY RANDOM()` in ActiveRecord queries:
 
 ```
-2.7.6 :001 > puts Post.where(title: "abc").to_sql
-   (0.7ms)  SELECT sqlite_version(*)
-SELECT "posts".* FROM "posts" WHERE "posts"."title" = 'abc' ORDER BY RAND()
+irb(main):001:0> Post.where(title: "abc")
+   (2.1ms)  SELECT sqlite_version(*)
+  Post Load (0.3ms)  SELECT "posts".* FROM "posts" WHERE "posts"."title" = ? ORDER BY RANDOM()  [["title", "abc"]]
+=> []
+irb(main):002:0> Post.limit(5).delete_all
+  Post Delete All (0.2ms)  DELETE FROM "posts" WHERE "posts"."id" IN (SELECT "posts"."id" FROM "posts" ORDER BY RANDOM() LIMIT ?)  [["LIMIT", 5]]
+=> 0
 ```
 
 ## Future development
