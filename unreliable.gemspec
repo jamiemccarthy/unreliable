@@ -6,10 +6,10 @@ Gem::Specification.new do |s|
   s.name = "unreliable"
   s.version = Unreliable::VERSION
   s.license = "MIT"
-  s.summary = "Randomize relation final order for tests"
+  s.summary = "For ActiveRecord tests, surface ambiguous-ordering bugs"
   s.description = <<~EODESC
     Unreliable helps uncover bugs in Rails apps that rely on ambiguous database ordering.
-    With it installed, a test suite is less likely to accidentally succeed.
+    Installing it makes both your app and your test suite more robust.
   EODESC
   s.author = "James McCarthy"
   s.email = "jamie@mccarthy.vg"
