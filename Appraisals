@@ -30,3 +30,7 @@ end
 appraise "activerecord-7.0" do
   gem "activerecord", "~> 7.0.0"
 end
+
+appraise "activerecord-7.1" do
+  gem "rails", ref: "2497eb0d5daf4f9aebce692c5bfad3792fecc712"
+end
