@@ -6,8 +6,17 @@ AllCops:
     - 'bin/*'
     - 'gemfiles/*'
 
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
+
 Layout/LineLength:
   Max: 120
+
+Metrics/AbcSize:
+  Max: 30
+
+Metrics/CyclomaticComplexity:
+  Max: 9
 
 Metrics/MethodLength:
   Max: 30
@@ -26,3 +35,20 @@ Style/StringLiteralsInInterpolation:
 
 Layout/MultilineOperationIndentation:
   Enabled: false
+
+# Standardrb handles these
+
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: false
+
+Metrics/BlockLength:
+  Max: 30
+
+Style/Alias:
+  Enabled: false
+
+Style/TernaryParentheses:
+  EnforcedStyle: require_parentheses_when_complex
