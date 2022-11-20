@@ -53,7 +53,7 @@ jobs:
       run: |
         export BUNDLE_GEMFILE="${GITHUB_WORKSPACE}/gemfiles/activerecord_${MATRIX_ACTIVERECORD_VERSION}.gemfile"
         gem install bundler
-        bundle install
+        bundle install --verbose
 
     - name: Run tests
       env:
