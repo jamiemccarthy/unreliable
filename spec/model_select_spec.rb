@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
-RSpec.describe Thing do
+RSpec.describe Cat do
   it "randomly selects from all" do
-    expect(Thing.all.to_sql).to end_with("ORDER BY RANDOM()")
+    expect(Cat.all.to_sql).to end_with("ORDER BY RANDOM()")
   end
 
   it "randomly selects from some" do
-    expect(Thing.where(word: "foo").to_sql).to end_with("ORDER BY RANDOM()")
+    expect(Cat.where(name: "foo").to_sql).to end_with("ORDER BY RANDOM()")
   end
 
   it "adds randomness to existing order" do
-    expect(Thing.order(:word).to_sql).to end_with('ORDER BY "things"."word" ASC, RANDOM()')
+    expect(Cat.order(:name).to_sql).to end_with('ORDER BY "cats"."name" ASC, RANDOM()')
   end
 
   it "respects a disable block" do
     Unreliable::Config.disable do
-      expect(Thing.where(word: "foo").to_sql).to_not end_with("ORDER BY RANDOM()")
-      expect(Thing.where(word: "foo").to_sql).to end_with(%q("things"."word" = 'foo'))
+      expect(Cat.where(name: "foo").to_sql).to_not end_with("ORDER BY RANDOM()")
+      expect(Cat.where(name: "foo").to_sql).to end_with(%q("cats"."name" = 'foo'))
     end
   end
 end
