@@ -4,6 +4,13 @@ require "bundler"
 
 Bundler.require :default, :development
 
+if ActiveRecord.gem_version >= Gem::Version.new("5.2") && ActiveRecord.gem_version < Gem::Version.new("6.0")
+  # This setting was introduced in Rails 5.2, made the default in Rails 6.0, and
+  # removed in Rails 6.1.
+  require "active_record/connection_adapters/sqlite3_adapter"
+  ActiveRecord::ConnectionAdapters::SQLite3Adapter.represent_boolean_as_integer = true
+end
+
 Combustion.initialize! :active_record
 
 RSpec.configure do |config|
