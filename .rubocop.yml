@@ -9,20 +9,43 @@ AllCops:
 Layout/LineLength:
   Max: 120
 
+Metrics/AbcSize:
+  Max: 30
+
+Metrics/BlockLength:
+  Max: 30
+
+Metrics/CyclomaticComplexity:
+  Max: 9
+
 Metrics/MethodLength:
   Max: 30
 
 Style/Documentation:
   Enabled: false
 
-Style/StringLiterals:
-  Enabled: true
-  EnforcedStyle: double_quotes
-  ConsistentQuotesInMultiline: false
+# Standardrb handles these
 
-Style/StringLiteralsInInterpolation:
-  Enabled: true
-  EnforcedStyle: double_quotes
+Layout/ArgumentAlignment:
+  Enabled: false
+
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
 
 Layout/MultilineOperationIndentation:
+  Enabled: false
+
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: false
+
+Style/Alias:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/StringLiteralsInInterpolation:
+  Enabled: false
+
+Style/TernaryParentheses:
   Enabled: false
