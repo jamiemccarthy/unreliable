@@ -81,7 +81,7 @@ The problem in this example is easy to see because many books are published each
 
 `unreliable` is tested to support Ruby 2.6 through 3.1, and Rails 5.0 through 7.0.
 
-As of August 2022, this is all released versions of both that are currently supported, plus several older releases.
+As of November 2022, this is all released versions of both that are currently supported, plus several older releases.
 
 `unreliable` depends only on ActiveRecord and Railties. If you have a non-Rails app that uses ActiveRecord, you can still use it.
 
@@ -89,7 +89,7 @@ As of August 2022, this is all released versions of both that are currently supp
 
 `unreliable` does exactly nothing outside of test environments. There is intentionally no way to enable `unreliable` in production, and there never will be.
 
-In a Rails test environment, `unreliable` patches ActiveRecord to always append a final `ORDER BY` clause that returns results in a random order.
+In a Rails test environment, `unreliable` patches ActiveRecord to append a final `ORDER BY` clause, when necessary, that returns results in a random order.
 
 Because it's appended, the existing ordering is not affected unless it is ambiguous.
 
@@ -100,6 +100,10 @@ With `unreliable` installed, every ActiveRecord relation invoked by the test sui
 This means that the `ORDER BY` applies to not just `SELECT` but e.g. `delete_all` and `update_all`. It also applies within subqueries.
 
 The patch is only applied when `Rails.env.test?`, and that boolean is also checked on every invocation, just to make certain it has no effect in any other environment.
+
+### No dual-purpose environment please
+
+Your test environment is just for running your test suite. If you've overloaded the test environment to do any actual work, you'd be frustrated when `unreliable` slows it down and changes its behavior, so don't install it (yet).
 
 ## Contributing
 
@@ -131,7 +135,7 @@ Appraisal ensures the tests run against every compatible minor version of Active
 
 The GitHub CI workflow in `.github/` ensures those tests are also run against against every compatible minor version of Ruby. Your PR won't trigger my GitHub project's workflow, but you're welcome to run your own, or ask me to run mine manually.
 
-Testing against ActiveRecord is done with [Combustion](https://github.com/pat/combustion), which stands up a local single-table SQLite database and an ActiveRecord-based model for it. This gives more reliable coverage than mocking unit tests within ActiveRecord itself.
+Testing against ActiveRecord is done with [Combustion](https://github.com/pat/combustion), which stands up a local SQLite database and ActiveRecord-based models for it. This gives more reliable coverage than mocking unit tests within ActiveRecord itself, though I do some of that too.
 
 ### Experiment
 
@@ -165,7 +169,7 @@ But there are other ways you can order a relation but still have your query be a
 * ORDER BY a column with values that differ only by [character case](https://dev.mysql.com/doc/refman/8.0/en/sorting-rows.html)
 * ORDER BY values that are identical within the [prefix length limit](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_max_sort_length) examined for sorting
 
-`unreliable` correctly tests these because the random order is always appended.
+`unreliable` ensures correct testing because it appends a random order to each of these cases.
 
 ## References
 
