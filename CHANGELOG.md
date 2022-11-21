@@ -1,3 +1,9 @@
+## Unreliable 0.9.1 (November 21, 2022) ##
+
+### Changed
+
+* Improve efficiency by using ActiveRecord's SchemaCache.
+
 ## Unreliable 0.9.0 (November 20, 2022) ##
 
 ### Changed
