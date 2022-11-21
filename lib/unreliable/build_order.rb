@@ -47,8 +47,11 @@ module Unreliable
     end
 
     def primary_key_columns(arel)
-      # primary_key returns a String if it's one column, an Array if two or more
-      [ActiveRecord::Base.connection.primary_key(arel.froms.first.name)].flatten
+      # primary_keys returns a String if it's one column, an Array if two or more.
+      # Using the SchemaCache minimizes the number of times we have to, e.g. in MySQL,
+      # SELECT column_name FROM information_schema.statistics
+      # (or in Rails < 6, SELECT column_name FROM information_schema.key_column_usage)
+      [ActiveRecord::Base.connection.schema_cache.primary_keys(arel.froms.first.name)].flatten
     end
 
     def order_columns(arel)
