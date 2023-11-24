@@ -6,6 +6,10 @@ AllCops:
     - 'bin/*'
     - 'gemfiles/*'
 
+# Following this cop makes Appraisal's generated gemfiles too wordy
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
 Layout/LineLength:
   Max: 120
 
