@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "./lib/unreliable/version"
+require_relative "lib/unreliable/version"
 
 Gem::Specification.new do |s|
   s.name = "unreliable"
