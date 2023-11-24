@@ -31,10 +31,6 @@ appraise "activerecord-7.0" do
   gem "activerecord", "~> 7.0.0"
 end
 
-# 7.1 isn't released yet; as of this writing this commit is the tip of the master branch.
-# I'm not sure if there's a way to only pull in activerecord, so for this test purpose
-# pulling in all of rails works fine, if a bit less efficient.
-
 appraise "activerecord-7.1" do
-  gem "rails", ref: "2497eb0d5daf4f9aebce692c5bfad3792fecc712"
+  gem "activerecord", "~> 7.1.0"
 end
