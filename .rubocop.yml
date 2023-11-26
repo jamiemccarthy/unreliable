@@ -6,8 +6,13 @@ AllCops:
     - 'bin/*'
     - 'gemfiles/*'
 
-# Following this cop makes Appraisal's generated gemfiles too wordy
+# Following this cop's advice makes Appraisal's generated gemfiles too wordy
 Gemspec/DevelopmentDependencies:
+  Enabled: false
+
+# Following this cop's advice breaks my sqlite3 add_development_dependency hack
+# to use 1.6 on ruby 3.2
+Gemspec/RubyVersionGlobalsUsage:
   Enabled: false
 
 Layout/LineLength:
