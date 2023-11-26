@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - ruby_version=3.0.6
+        - activerecord_version=6.1
+    depends_on:
+      - mysql
+      - postgres
+  mysql:
+    platform: linux/amd64
+    image: mysql:8-debian
+    environment:
+      - MYSQL_ROOT_PASSWORD=Password123
+    volumes:
+      - mysqldata:/var/lib/mysql
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_PASSWORD=Password123
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  mysqldata:
+  pgdata:
