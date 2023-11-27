@@ -18,6 +18,8 @@ jobs:
           # Rails 7's gemspec requires ruby >= 2.7
           - ruby-version: '2.6.10'
             activerecord-version: '7.0'
+          - ruby-version: '2.6.10'
+            activerecord-version: '7.1'
           # Rails 5.x is unlikely ever to support ruby >= 3.0
           # https://github.com/rails/rails/issues/40938#issuecomment-751569171
           - ruby-version: '3.0.6'
@@ -49,18 +51,11 @@ jobs:
     - name: Build
       run: docker compose build --build-arg ruby_version=${{ matrix.ruby-version }} --build-arg activerecord_version=${{ matrix.activerecord-version }}
 
-    - name: Check versions
-      run: |
-        ruby -v
-        rbenv -v
-        eval $(rbenv init -) && ruby -v
-        eval $(rbenv init -) && bundle --version
-
     - name: Run standardrb
-      run: bundle exec standardrb
+      run: docker compose run --rm --no-deps app bundle exec standardrb
 
     - name: Run rubocop
-      run: bundle exec rubocop
+      run: docker compose run --rm --no-deps app bundle exec rubocop
 
     - name: Run tests
-      run: bundle exec rake
+      run: docker compose run --rm app bundle exec rake
