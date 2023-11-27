@@ -52,10 +52,10 @@ jobs:
       run: docker compose build --build-arg ruby_version=${{ matrix.ruby-version }} --build-arg activerecord_version=${{ matrix.activerecord-version }}
 
     - name: Run standardrb
-      run: docker compose run --rm --no-deps app bundle exec standardrb
+      run: docker compose run --rm --no-deps app bash --login -c 'bundle exec standardrb'
 
     - name: Run rubocop
-      run: docker compose run --rm --no-deps app bundle exec rubocop
+      run: docker compose run --rm --no-deps app bash --login -c 'bundle exec rubocop'
 
     - name: Run tests
-      run: docker compose run --rm app bundle exec rake
+      run: docker compose run --rm app bash --login -c 'bundle exec rake'
