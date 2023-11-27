@@ -1,7 +1,7 @@
 # To build for a version of ruby and active_record, run e.g.:
 
 # docker compose build --build-arg ruby_version=3.0.6 --build-arg activerecord_version=6.1
-# docker compose run --rm app bash --login
+# docker compose run --rm app bash
 # docker compose down
 
 services:
