@@ -38,9 +38,6 @@ jobs:
             activerecord-version: '5.1'
           - ruby-version: '3.2.2'
             activerecord-version: '5.2'
-          # This can't install sqlite3 and I have no idea why
-          - ruby-version: '3.2.2'
-            activerecord-version: '7.1'
 
     steps:
     - name: Cleanup
@@ -51,6 +48,13 @@ jobs:
 
     - name: Build
       run: docker compose build --build-arg ruby_version=${{ matrix.ruby-version }} --build-arg activerecord_version=${{ matrix.activerecord-version }}
+
+    - name: Check versions
+      run: |
+        ruby -v
+        rbenv -v
+        eval $(rbenv init -) && ruby -v
+        eval $(rbenv init -) && bundle --version
 
     - name: Run standardrb
       run: bundle exec standardrb
