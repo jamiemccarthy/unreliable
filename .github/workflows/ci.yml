@@ -55,5 +55,11 @@ jobs:
     - name: Run rubocop
       run: docker compose run --rm --no-deps app bundle exec rubocop
 
-    - name: Run tests
+    - name: Run tests, mysql2
+      run: docker compose run --rm app bundle exec rake RSPEC_ADAPTER=mysql2
+
+    - name: Run tests, postgresql
+      run: docker compose run --rm app bundle exec rake RSPEC_ADAPTER=postgresql
+
+    - name: Run tests, sqlite3
       run: docker compose run --rm app bundle exec rake
