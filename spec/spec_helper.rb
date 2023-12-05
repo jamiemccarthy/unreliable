@@ -2,10 +2,10 @@
 
 class UnreliableTest
   DEFAULT_ADAPTER = "sqlite3"
-  VALID_ADAPTERS = ["mysql2", "postgresql", "sqlite3"].freeze
+  VALID_ADAPTERS = %w[mysql2 postgresql sqlite3].freeze
   DATABASE_YML_FILENAME = "spec/internal/config/database.yml"
 
-  def self.get_adapter!
+  def self.find_adapter!
     ENV["RSPEC_ADAPTER"].presence || ::UnreliableTest::DEFAULT_ADAPTER
   end
 
@@ -75,8 +75,8 @@ RSpec.configure do |config|
   config.default_formatter = "doc" if config.files_to_run.count == 1
 
   # Set the adapter for this run by copying the appropriate file into place.
-  adapter = ::UnreliableTest.get_adapter!
-  ::UnreliableTest.assert_valid_adapter!(adapter)
-  ::UnreliableTest.cp_adapter_file(adapter)
+  adapter = UnreliableTest.find_adapter!
+  UnreliableTest.assert_valid_adapter!(adapter)
+  UnreliableTest.cp_adapter_file(adapter)
   puts "Running RSpec for #{adapter}"
 end
