@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class UnreliableTest
-  DEFAULT_ADAPTER = "sqlite3".freeze
+  DEFAULT_ADAPTER = "sqlite3"
   VALID_ADAPTERS = ["mysql2", "postgresql", "sqlite3"].freeze
-  DATABASE_YML_FILENAME = "spec/internal/config/database.yml".freeze
+  DATABASE_YML_FILENAME = "spec/internal/config/database.yml"
 
   def self.get_adapter!
-    ENV['RSPEC_ADAPTER'].presence || ::UnreliableTest::DEFAULT_ADAPTER
+    ENV["RSPEC_ADAPTER"].presence || ::UnreliableTest::DEFAULT_ADAPTER
   end
 
   def self.assert_valid_adapter!(adapter)
@@ -40,9 +40,9 @@ Combustion.initialize! :active_record
 def adapter_text(sql)
   case ActiveRecord::Base.connection.adapter_name
   when "Mysql2"
-    sql.gsub(/"/, "`").gsub(/RANDOM\(\)/, "RAND()")
+    sql.tr('"', "`").tr("RANDOM()", "RAND()")
   when "pg"
-    sql.gsub(/"/, "`")
+    sql.tr('"', "`")
   else
     sql
   end
@@ -54,7 +54,7 @@ end
 def order_text(sql)
   case ActiveRecord::Base.connection.adapter_name
   when "Mysql2"
-    sql.gsub(/"/, "`")
+    sql.tr('"', "`")
   else
     sql
   end
