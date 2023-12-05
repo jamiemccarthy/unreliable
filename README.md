@@ -79,7 +79,7 @@ The problem in this example is easy to see because many books are published each
 
 ## Requirements
 
-`unreliable` is tested to support Ruby 2.6 through 3.2, and Rails 5.0 through 7.1. (All supported releases, plus several older ones.)
+`unreliable` is tested to support Ruby 2.6 through 3.2, and Rails 5.0 through 7.1.
 
 `unreliable` depends only on ActiveRecord and Railties. If you have a non-Rails app that uses ActiveRecord, you can still use it.
 
@@ -125,7 +125,7 @@ bundle exec rake
 
 The GitHub CI workflow in `.github/` ensures those tests are also run against against every compatible minor version of Ruby. Your PR won't trigger my GitHub project's workflow, but you're welcome to run your own, or ask me to run mine manually.
 
-Testing against ActiveRecord is done with [Combustion](https://github.com/pat/combustion), which stands up a local SQLite database and ActiveRecord-based models for it. This gives more reliable coverage than mocking unit tests within ActiveRecord itself, though I do some of that too. Coming soon, MySQL and Postgres testing.
+Testing against ActiveRecord is done with [Combustion](https://github.com/pat/combustion), which stands up a local SQLite database and ActiveRecord-based models for it. This gives more reliable coverage than mocking unit tests within ActiveRecord itself, though I do some of that too. MySQL and Postgres testing are done using docker.
 
 ### Experiment
 
@@ -156,7 +156,7 @@ The most common ambiguous ordering is an ORDER BY one column that is not unique,
 But there are other ways you can order a relation but still have your query be ambiguous:
 
 * ORDER BY multiple columns, but with no subset which is unique
-* ORDER BY a column with values that differ only by [character case](https://dev.mysql.com/doc/refman/8.0/en/sorting-rows.html)
+* ORDER BY a column your [pre-Rails-6.1](https://guides.rubyonrails.org/6_1_release_notes.html#active-record-notable-changes) application thought was unique, but currently isn't, due to your non-UNIQUE database column's accent- or case-insensitive [collation](https://dev.mysql.com/doc/refman/8.0/en/charset-general.html)
 * ORDER BY values that are identical only within the [prefix length limit](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_max_sort_length) examined for sorting
 
 `unreliable` ensures correct testing because it appends a random order to each of these cases.
