@@ -36,6 +36,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency "appraisal", "~> 2.4"
   s.add_development_dependency "bundler", "~> 2.1"
   s.add_development_dependency "combustion", "~> 1.3"
+  s.add_development_dependency "mysql2", "~> 0.5"
+  s.add_development_dependency "pg", "~> 1.5"
   s.add_development_dependency "rake", "~> 13.0"
   s.add_development_dependency "rspec", "~> 3.0"
   s.add_development_dependency "sqlite3", ((RUBY_VERSION >= "3.2") ? "~> 1.6.9" : "~> 1.5.4")

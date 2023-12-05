@@ -1,0 +1,6 @@
+test:
+  adapter: postgresql
+  database: unreliable_test
+  host: postgres
+  username: postgres
+  password: Password123

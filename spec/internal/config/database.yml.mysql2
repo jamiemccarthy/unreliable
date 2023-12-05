@@ -1,0 +1,6 @@
+test:
+  adapter: mysql2
+  database: unreliable_test
+  host: mysql
+  username: root
+  password: Password123
