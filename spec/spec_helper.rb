@@ -32,9 +32,19 @@ if ActiveRecord.gem_version >= Gem::Version.new("5.2") && ActiveRecord.gem_versi
   ActiveRecord::ConnectionAdapters::SQLite3Adapter.represent_boolean_as_integer = true
 end
 
+if ActiveRecord.gem_version >= Gem::Version.new("6.1")
+  # We would like to use this feature all the time, but it was only introduced in 6.1.
+  # It causes all Rails deprecation warnings to raise.
+  ActiveSupport::Deprecation.disallowed_warnings = :all
+end
+
+# Let's see if we can use this everywhere, or maybe we have to reset the value in a
+# wrapper around the method that uses order_text.
+ActiveRecord::Base.allow_unsafe_raw_sql = :disabled
+
 Combustion.initialize! :active_record
 
-# Convert the sqlite3 version of the text that each test is expecting to see,
+# Convert the sqlite3 version of the text that each test is `expect`ing to see,
 # into the text that the adapter would produce.
 
 def adapter_text(sql)
@@ -49,7 +59,7 @@ def adapter_text(sql)
 end
 
 # ActiveRecord checks textual .order() arguments to ensure they match the adapter.
-# This converts a textual order to match each adapter.
+# This converts our test's text to match. See spec/textual_order_spec.rb for more.
 
 def order_text(sql)
   case ActiveRecord::Base.connection.adapter_name
