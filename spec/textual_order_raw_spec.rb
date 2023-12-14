@@ -42,14 +42,14 @@ RSpec.describe "textual order raw" do
 
   it "raises on non-Arel-escaped quoted table and column names",
     skip: ((ActiveRecord::VERSION::MAJOR == 6) ? "test is for ActiveRecord 6 only" : false) do
-    expect { Shelf.order(order_text('"shelves"."shelf_id"')).to_sql }.to raise
-      ActiveRecord::ActiveRecordError with "Query method called with non-attribute argument"
+    # It should actually raise ActiveRecord::UnknownAttributeReference, but since that's
+    # not defined in earlier versions of Rails, we name it by its superclass here.
+    expect { Shelf.order(order_text('"shelves"."shelf_id"')).to_sql }.to raise_error(ActiveRecord::ActiveRecordError)
   end
 
   it "raises on non-Arel-escaped quoted column names",
     skip: ((ActiveRecord::VERSION::MAJOR == 6) ? "test is for ActiveRecord 6 only" : false) do
-    expect { Shelf.order(order_text('"shelf_id"')).to_sql }.to raise
-      ActiveRecord::ActiveRecordError with "Query method called with non-attribute argument"
+    expect { Shelf.order(order_text('"shelf_id"')).to_sql }.to raise_error(ActiveRecord::ActiveRecordError)
   end
 
   it "randomly selects from shelves ordered by unquoted fully-qualified textual id asc" do
