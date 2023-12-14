@@ -38,9 +38,11 @@ if ActiveRecord.gem_version >= Gem::Version.new("6.1")
   ActiveSupport::Deprecation.disallowed_warnings = :all
 end
 
-# Let's see if we can use this everywhere, or maybe we have to reset the value in a
-# wrapper around the method that uses order_text.
-ActiveRecord::Base.allow_unsafe_raw_sql = :disabled
+if ActiveRecord.gem_version >= Gem::Version.new("5.2") && ActiveRecord.gem_version < Gem::Version.new("6.1")
+  # This setting was introduced in Rails 5.2, deprecated in Rails 6.1, and
+  # removed in Rails 7.0.
+  ActiveRecord::Base.allow_unsafe_raw_sql = :disabled
+end
 
 Combustion.initialize! :active_record
 
