@@ -48,7 +48,9 @@ RSpec.describe "textual order raw" do
   end
 
   it "raises (in 5.2) on non-Arel-escaped quoted table and column name",
-    skip: ((ActiveRecord.version < Gem::Version.new("5.2") || ActiveRecord.version >= Gem::Version.new("6.0")) ? "test is for ActiveRecord 5.2 only" : false) do
+    skip: (
+      (ActiveRecord.version < Gem::Version.new("5.2") || ActiveRecord.version >= Gem::Version.new("6.0")
+      ) ? "test is for ActiveRecord 5.2 only" : false) do
     # It actually raises ActiveRecord::UnknownAttributeReference, but since that's
     # not defined in earlier versions of Rails, referencing that would itself raise!
     # So we name that class by its superclass here.
@@ -56,19 +58,25 @@ RSpec.describe "textual order raw" do
   end
 
   it "raises (in 5.2) on non-Arel-escaped quoted column name",
-    skip: ((ActiveRecord.version < Gem::Version.new("5.2") || ActiveRecord.version >= Gem::Version.new("6.0")) ? "test is for ActiveRecord 5.2 only" : false) do
+    skip: (
+      (ActiveRecord.version < Gem::Version.new("5.2") || ActiveRecord.version >= Gem::Version.new("6.0")
+      ) ? "test is for ActiveRecord 5.2 only" : false) do
     expect { Shelf.order(order_text('"shelf_id"')).to_sql }.to raise_error(ActiveRecord::ActiveRecordError)
   end
 
   it "randomly selects (except in 5.2) on non-Arel-escaped quoted table and column name",
-    skip: ((ActiveRecord.version >= Gem::Version.new("5.2") && ActiveRecord.version < Gem::Version.new("6.0")) ? "test is not for ActiveRecord 5.2" : false) do
+    skip: (
+      (ActiveRecord.version >= Gem::Version.new("5.2") && ActiveRecord.version < Gem::Version.new("6.0")
+      ) ? "test is not for ActiveRecord 5.2" : false) do
     expect(Shelf.order(order_text('"shelves"."shelf_id"')).to_sql).to end_with(
       adapter_text('ORDER BY "shelves"."shelf_id", RANDOM()')
     )
   end
 
   it "randomly selects (except in 5.2) on non-Arel-escaped quoted column name",
-    skip: ((ActiveRecord.version >= Gem::Version.new("5.2") && ActiveRecord.version < Gem::Version.new("6.0")) ? "test is not for ActiveRecord 5.2" : false) do
+    skip: (
+      (ActiveRecord.version >= Gem::Version.new("5.2") && ActiveRecord.version < Gem::Version.new("6.0")
+      ) ? "test is not for ActiveRecord 5.2" : false) do
     expect(Shelf.order(order_text('"shelf_id"')).to_sql).to end_with(
       adapter_text('ORDER BY "shelf_id", RANDOM()')
     )

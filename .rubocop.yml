@@ -23,6 +23,8 @@ Metrics/AbcSize:
 
 Metrics/BlockLength:
   Max: 40
+  Exclude:
+    - spec/textual_order_raw_spec.rb
 
 Metrics/CyclomaticComplexity:
   Max: 9
@@ -49,6 +51,10 @@ Layout/SpaceInsideHashLiteralBraces:
 
 Style/Alias:
   Enabled: false
+
+Style/MultilineTernaryOperator:
+  Exclude:
+    - spec/textual_order_raw_spec.rb
 
 Style/QuotedSymbols:
   Enabled: false
