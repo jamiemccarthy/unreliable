@@ -55,8 +55,8 @@ RSpec.describe "textual order raw" do
   end
 
   it "randomly selects from shelves ordered by unquoted fully-qualified textual id asc" do
-    expect(Shelf.order("shelves.shelf_id"))).to_sql).to end_with(
-      adapter_text('ORDER BY shelves.shelf_id, RANDOM()')
+    expect(Shelf.order("shelves.shelf_id").to_sql).to end_with(
+      adapter_text("ORDER BY shelves.shelf_id, RANDOM()")
     )
   end
 end
