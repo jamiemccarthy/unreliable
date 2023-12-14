@@ -40,15 +40,13 @@ RSpec.describe "textual order raw" do
     )
   end
 
-  it "raises on non-Arel-escaped quoted table and column names",
-    skip: ((ActiveRecord::VERSION::MAJOR == 6) ? "test is for ActiveRecord 6 only" : false) do
+  it "raises on non-Arel-escaped quoted table and column names" do
     # It should actually raise ActiveRecord::UnknownAttributeReference, but since that's
     # not defined in earlier versions of Rails, we name it by its superclass here.
     expect { Shelf.order(order_text('"shelves"."shelf_id"')).to_sql }.to raise_error(ActiveRecord::ActiveRecordError)
   end
 
-  it "raises on non-Arel-escaped quoted column names",
-    skip: ((ActiveRecord::VERSION::MAJOR == 6) ? "test is for ActiveRecord 6 only" : false) do
+  it "raises on non-Arel-escaped quoted column names" do
     expect { Shelf.order(order_text('"shelf_id"')).to_sql }.to raise_error(ActiveRecord::ActiveRecordError)
   end
 
