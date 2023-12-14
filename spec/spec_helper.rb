@@ -32,9 +32,11 @@ if ActiveRecord.gem_version >= Gem::Version.new("5.2") && ActiveRecord.gem_versi
   ActiveRecord::ConnectionAdapters::SQLite3Adapter.represent_boolean_as_integer = true
 end
 
-if ActiveRecord.gem_version >= Gem::Version.new("6.1")
-  # We would like to use this feature all the time, but it was only introduced in 6.1.
-  # It causes all Rails deprecation warnings to raise.
+if ActiveRecord.gem_version >= Gem::Version.new("6.1") && ActiveRecord.gem_version < Gem::Version.new("7.1")
+  # This causes all Rails deprecation warnings to raise.
+  # We would like to use this feature all the time, but it was only introduced in 6.1,
+  # and combustion <= 1.3.7 throws a deprecation in Rails 7.1. The next release of
+  # combustion should fix it: https://github.com/pat/combustion/pull/131
   ActiveSupport::Deprecation.disallowed_warnings = :all
 end
 
@@ -84,6 +86,7 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.example_status_persistence_file_path = "spec/examples.txt"
   config.warnings = true
+  config.raise_errors_for_deprecations!
   config.default_formatter = "doc" if config.files_to_run.count == 1
 
   # Set the adapter for this run by copying the appropriate file into place.
