@@ -18,7 +18,7 @@ RSpec.describe Cat do
   it "adds, updates and selects some cats" do
     expect(Cat.count).to eq(0)
     UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
-    expect(Cat.where(name: "Zelda").to_a.size).to eq(1)
+    expect(Cat.where(name: "Rashad").to_a.size).to eq(1)
     expect(Cat.where("name LIKE '%a%'").to_a.size).to eq(5)
     Cat.find_by(name: "harry").destroy!
     expect(Cat.where("name LIKE '%a%'").to_a.size).to eq(4)
