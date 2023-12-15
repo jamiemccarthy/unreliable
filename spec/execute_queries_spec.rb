@@ -2,12 +2,12 @@
 
 class UnreliableTest
   # 12 factorial is about half a billion possible shuffles
-  CAT_NAMES = %w[angus Zelda bertha harry peaches bubbles Morty Tofu Purrito Groovy Zoe stinky]
+  CAT_NAMES = %w[angus Rashad bertha harry moka bubbles Morty Tofu Purrito Neffy Zoe Xiǎolè].freeze
   RESPONSE_COUNT = 10
 end
 
 RSpec.describe Cat do
-  it "add and select all cats" do
+  it "adds and selects all cats" do
     expect(Cat.count).to eq(0)
     UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
     expect(Cat.all.to_a.size).to eq(UnreliableTest::CAT_NAMES.size)
@@ -15,7 +15,7 @@ RSpec.describe Cat do
     Cat.delete_all
   end
 
-  it "add, update and select some cats" do
+  it "adds, updates and selects some cats" do
     expect(Cat.count).to eq(0)
     UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
     expect(Cat.where(name: "Zelda").to_a.size).to eq(1)
@@ -28,7 +28,7 @@ RSpec.describe Cat do
     Cat.delete_all
   end
 
-  it "add and select all ordered data unpredictably" do
+  it "adds and selects all ordered data unpredictably" do
     expect(Cat.count).to eq(0)
     UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
     responses = (1..UnreliableTest::RESPONSE_COUNT).map do
@@ -37,23 +37,23 @@ RSpec.describe Cat do
     # The chances that there's one repeat in 10 randomly-ordered SELECTs
     # is about 1 in ten billion, and we allow for that. The chances that
     # there's two and this test incorrectly fails is in the quintillionths.
-    expect(responses.uniq.size).to satisfy { |v| v >= 9 }
+    expect(responses.uniq.size).to(satisfy { |v| v >= 9 })
   ensure
     Cat.delete_all
   end
 
-  it "add and select some ordered data unpredictably" do
+  it "adds and selects some ordered data unpredictably" do
     expect(Cat.count).to eq(0)
     UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
     responses = (1..UnreliableTest::RESPONSE_COUNT).map do
       Cat.where.not(name: "bubbles").map(&:name).join(":")
     end
-    expect(responses.uniq.size).to satisfy { |v| v >= 8 }
+    expect(responses.uniq.size).to(satisfy { |v| v >= 8 })
   ensure
     Cat.delete_all
   end
 
-  it "add and select all ordered data predictably with order by id" do
+  it "adds and selects all ordered data predictably with order by id" do
     expect(Cat.count).to eq(0)
     UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
     responses = (1..UnreliableTest::RESPONSE_COUNT).map do
@@ -64,7 +64,7 @@ RSpec.describe Cat do
     Cat.delete_all
   end
 
-  it "add and select all ordered data predictably with order by name" do
+  it "adds and selects all ordered data predictably with order by name" do
     expect(Cat.count).to eq(0)
     UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
     responses = (1..UnreliableTest::RESPONSE_COUNT).map do
@@ -75,7 +75,7 @@ RSpec.describe Cat do
     Cat.delete_all
   end
 
-  it "add and select some ordered data predictably with order" do
+  it "adds and selects some ordered data predictably with order" do
     expect(Cat.count).to eq(0)
     UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
     responses = (1..UnreliableTest::RESPONSE_COUNT).map do
@@ -86,7 +86,7 @@ RSpec.describe Cat do
     Cat.delete_all
   end
 
-  it "add and select all ordered data predictably with disable" do
+  it "adds and selects all ordered data predictably with disable" do
     expect(Cat.count).to eq(0)
     UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
     responses =
@@ -105,7 +105,7 @@ RSpec.describe Cat do
     # wants, the number of unique responses might be up to RESPONSE_COUNT!
     # If this test fails erroneously basically ever, I would think it
     # should be rewritten or removed!
-    expect(responses.uniq.size).to satisfy { |v| v <= 3 }
+    expect(responses.uniq.size).to(satisfy { |v| v <= 3 })
   ensure
     Cat.delete_all
   end
