@@ -54,7 +54,7 @@ Combustion.initialize! :active_record
 def adapter_text(sql)
   case ActiveRecord::Base.connection.adapter_name
   when "Mysql2"
-    sql.tr('"', "`").tr("RANDOM()", "RAND()")
+    sql.tr('"', "`").gsub("RANDOM()", "RAND()")
   when "pg"
     sql.tr('"', "`")
   else
