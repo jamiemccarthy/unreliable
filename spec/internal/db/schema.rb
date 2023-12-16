@@ -16,12 +16,12 @@ ActiveRecord::Schema.define do
   # Explicit primary key
   create_table "dreams", primary_key: :dream_id do |t|
     t.string "subject"
+    t.references :dreamer
   end
 
   # Association with dreams, where primary keys have different names
   create_table "dreamers", primary_key: :dreamer_id do |t|
     t.string :name
-    t.references :dream
   end
 
   # Association with cats, where primary keys have same names

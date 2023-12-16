@@ -1,23 +1,25 @@
 # frozen_string_literal: true
 
-class UnreliableTest
+class CatTest < UnreliableTest
   # 12 factorial is about half a billion possible shuffles
-  CAT_NAMES = %w[angus Rashad bertha harry moka bubbles Morty Tofu Purrito Neffy Zoe Xiǎolè].freeze
+  NAMES = %w[angus Rashad bertha harry moka bubbles Morty Tofu Purrito Neffy Zoe stinky].freeze
   RESPONSE_COUNT = 10
 end
 
 RSpec.describe Cat do
   it "adds and selects all cats" do
     expect(Cat.count).to eq(0)
-    UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
-    expect(Cat.all.to_a.size).to eq(UnreliableTest::CAT_NAMES.size)
+    CatTest::NAMES.shuffle.each { |name| Cat.new(name: name).save! }
+    expect(Cat.all.to_a.size).to eq(CatTest::NAMES.size)
   ensure
     Cat.delete_all
   end
 
-  it "adds, updates and selects some cats" do
+  it "adds, updates-via-instance, and selects some cats" do
+    ActiveRecord::Base.logger = Logger.new(STDOUT)
+    ActiveRecord::Base.logger.level = :debug
     expect(Cat.count).to eq(0)
-    UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
+    CatTest::NAMES.shuffle.each { |name| Cat.new(name: name).save! }
     expect(Cat.where(name: "Rashad").to_a.size).to eq(1)
     expect(Cat.where("name LIKE '%a%'").to_a.size).to eq(5)
     Cat.find_by(name: "harry").destroy!
@@ -28,10 +30,23 @@ RSpec.describe Cat do
     Cat.delete_all
   end
 
+  it "adds, updates-via-class, and selects some cats" do
+    expect(Cat.count).to eq(0)
+    CatTest::NAMES.shuffle.each { |name| Cat.new(name: name).save! }
+    expect(Cat.where(name: "Rashad").to_a.size).to eq(1)
+    expect(Cat.where("name LIKE '%a%'").to_a.size).to eq(5)
+    Cat.find_by(name: "harry").destroy!
+    expect(Cat.where("name LIKE '%a%'").to_a.size).to eq(4)
+    Cat.update(Cat.where("name NOT LIKE '%a%'").pluck(:id).first, name: "Mantissa")
+    expect(Cat.where("name LIKE '%a%'").to_a.size).to eq(5)
+  ensure
+    Cat.delete_all
+  end
+
   it "adds and selects all ordered data unpredictably" do
     expect(Cat.count).to eq(0)
-    UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
-    responses = (1..UnreliableTest::RESPONSE_COUNT).map do
+    CatTest::NAMES.shuffle.each { |name| Cat.new(name: name).save! }
+    responses = (1..CatTest::RESPONSE_COUNT).map do
       Cat.all.map(&:name).join(":")
     end
     # The chances that there's one repeat in 10 randomly-ordered SELECTs
@@ -44,8 +59,8 @@ RSpec.describe Cat do
 
   it "adds and selects some ordered data unpredictably" do
     expect(Cat.count).to eq(0)
-    UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
-    responses = (1..UnreliableTest::RESPONSE_COUNT).map do
+    CatTest::NAMES.shuffle.each { |name| Cat.new(name: name).save! }
+    responses = (1..CatTest::RESPONSE_COUNT).map do
       Cat.where.not(name: "bubbles").map(&:name).join(":")
     end
     expect(responses.uniq.size).to(satisfy { |v| v >= 8 })
@@ -55,8 +70,8 @@ RSpec.describe Cat do
 
   it "adds and selects all ordered data predictably with order by id" do
     expect(Cat.count).to eq(0)
-    UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
-    responses = (1..UnreliableTest::RESPONSE_COUNT).map do
+    CatTest::NAMES.shuffle.each { |name| Cat.new(name: name).save! }
+    responses = (1..CatTest::RESPONSE_COUNT).map do
       Cat.order(:id).map(&:name).join(":")
     end
     expect(responses.uniq.size).to eq(1)
@@ -66,8 +81,8 @@ RSpec.describe Cat do
 
   it "adds and selects all ordered data predictably with order by name" do
     expect(Cat.count).to eq(0)
-    UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
-    responses = (1..UnreliableTest::RESPONSE_COUNT).map do
+    CatTest::NAMES.shuffle.each { |name| Cat.new(name: name).save! }
+    responses = (1..CatTest::RESPONSE_COUNT).map do
       Cat.order(:name).map(&:name).join(":")
     end
     expect(responses.uniq.size).to eq(1)
@@ -77,8 +92,8 @@ RSpec.describe Cat do
 
   it "adds and selects some ordered data predictably with order" do
     expect(Cat.count).to eq(0)
-    UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
-    responses = (1..UnreliableTest::RESPONSE_COUNT).map do
+    CatTest::NAMES.shuffle.each { |name| Cat.new(name: name).save! }
+    responses = (1..CatTest::RESPONSE_COUNT).map do
       Cat.where.not(name: "Groovy").order(:id).map(&:name).join(":")
     end
     expect(responses.uniq.size).to eq(1)
@@ -88,10 +103,10 @@ RSpec.describe Cat do
 
   it "adds and selects all ordered data predictably with disable" do
     expect(Cat.count).to eq(0)
-    UnreliableTest::CAT_NAMES.shuffle.each { |name| Cat.new(name: name).save! }
+    CatTest::NAMES.shuffle.each { |name| Cat.new(name: name).save! }
     responses =
       Unreliable::Config.disable do
-        (1..UnreliableTest::RESPONSE_COUNT).map do
+        (1..CatTest::RESPONSE_COUNT).map do
           Cat.all.map(&:name).join(":")
         end
       end

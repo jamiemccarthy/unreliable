@@ -36,4 +36,4 @@ jobs:
       run: docker compose run --rm app bundle exec rake RSPEC_ADAPTER=postgresql
 
     - name: Run tests, sqlite3
-      run: docker compose run --rm app bundle exec rake
+      run: docker compose run --rm app bundle exec rake RSPEC_ADAPTER=sqlite

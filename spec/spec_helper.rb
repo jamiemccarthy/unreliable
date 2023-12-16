@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class UnreliableTest
-  DEFAULT_ADAPTER = "sqlite3"
-  VALID_ADAPTERS = %w[mysql2 postgresql sqlite3].freeze
+  DEFAULT_ADAPTER = "sqlite"
+  VALID_ADAPTERS = %w[mysql2 postgresql sqlite].freeze
+  ORIG_EXTENSION = "orig"
   DATABASE_YML_FILENAME = "spec/internal/config/database.yml"
 
   def self.find_adapter!
@@ -18,6 +19,10 @@ class UnreliableTest
       "#{::UnreliableTest::DATABASE_YML_FILENAME}.#{adapter}",
       ::UnreliableTest::DATABASE_YML_FILENAME
     )
+  end
+
+  def self.restore_adapter_file
+    cp_adapter_file(::UnreliableTest::ORIG_EXTENSION)
   end
 end
 
@@ -45,8 +50,6 @@ if ActiveRecord.gem_version >= Gem::Version.new("5.2") && ActiveRecord.gem_versi
   # removed in Rails 7.0.
   ActiveRecord::Base.allow_unsafe_raw_sql = :disabled
 end
-
-Combustion.initialize! :active_record
 
 # Convert the sqlite3 version of the text that each test is `expect`ing to see,
 # into the text that the adapter would produce.
@@ -89,9 +92,15 @@ RSpec.configure do |config|
   config.raise_errors_for_deprecations!
   config.default_formatter = "doc" if config.files_to_run.count == 1
 
-  # Set the adapter for this run by copying the appropriate file into place.
-  adapter = UnreliableTest.find_adapter!
-  UnreliableTest.assert_valid_adapter!(adapter)
-  UnreliableTest.cp_adapter_file(adapter)
-  puts "Running RSpec for #{adapter}"
+  config.after(:suite) do
+    UnreliableTest.restore_adapter_file
+  end
 end
+
+# Set the adapter for this run by copying the appropriate file into place.
+adapter = UnreliableTest.find_adapter!
+UnreliableTest.assert_valid_adapter!(adapter)
+UnreliableTest.cp_adapter_file(adapter)
+puts "Running RSpec for #{adapter} on ActiveRecord #{ActiveRecord.version} on ruby #{RUBY_VERSION}"
+
+Combustion.initialize! :active_record
