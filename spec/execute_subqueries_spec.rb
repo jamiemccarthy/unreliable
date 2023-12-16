@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'byebug'
-
 class DreamTest < UnreliableTest
   SUBJECTS = %w[fire air water earth life death].freeze
   DREAMER_NAMES = %w[Morpheus Cluracan Mervyn Gilbert Nuala].freeze

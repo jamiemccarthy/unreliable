@@ -16,7 +16,8 @@ RSpec.describe Cat do
   end
 
   it "adds, updates-via-instance, and selects some cats" do
-    ActiveRecord::Base.logger = Logger.new(STDOUT)
+    # TODO: remove extra logging
+    ActiveRecord::Base.logger = Logger.new($stdout)
     ActiveRecord::Base.logger.level = :debug
     expect(Cat.count).to eq(0)
     CatTest::NAMES.shuffle.each { |name| Cat.new(name: name).save! }
