@@ -21,13 +21,16 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Build
-      run: docker compose build --build-arg ruby_version=${{ matrix.ruby-version }} --build-arg activerecord_version=${{ matrix.activerecord-version }}
+      run: docker compose --progress=plain build --build-arg ruby_version=${{ matrix.ruby-version }} --build-arg activerecord_version=${{ matrix.activerecord-version }}
 
     - name: Run standardrb
       run: docker compose run --rm --no-deps app bundle exec standardrb
 
     - name: Run rubocop
       run: docker compose run --rm --no-deps app bundle exec rubocop
+
+    - name: Up
+      run: docker compose --progress=plain up -d
 
     - name: Run tests, mysql2
       run: docker compose run --rm app bundle exec rake RSPEC_ADAPTER=mysql2
