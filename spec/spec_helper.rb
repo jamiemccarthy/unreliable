@@ -77,6 +77,14 @@ def order_text(sql)
   end
 end
 
+# Set the adapter for this run by copying the appropriate file into place.
+adapter = UnreliableTest.find_adapter!
+UnreliableTest.assert_valid_adapter!(adapter)
+UnreliableTest.cp_adapter_file(adapter)
+puts "Running RSpec for #{adapter} on ActiveRecord #{ActiveRecord.version} on ruby #{RUBY_VERSION}"
+
+Combustion.initialize! :active_record
+
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
@@ -96,11 +104,3 @@ RSpec.configure do |config|
     UnreliableTest.restore_adapter_file
   end
 end
-
-# Set the adapter for this run by copying the appropriate file into place.
-adapter = UnreliableTest.find_adapter!
-UnreliableTest.assert_valid_adapter!(adapter)
-UnreliableTest.cp_adapter_file(adapter)
-puts "Running RSpec for #{adapter} on ActiveRecord #{ActiveRecord.version} on ruby #{RUBY_VERSION}"
-
-Combustion.initialize! :active_record
