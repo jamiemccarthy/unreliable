@@ -1,4 +1,4 @@
-## Unreliable 0.9.2 (xxxx, 2023) ##
+## Unreliable 0.10.0 (xxxx, 2023) ##
 
 ### Changed
 
