@@ -30,8 +30,8 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 2.6"
 
-  s.add_dependency "activerecord", ">= 5.0", "< 8.0"
-  s.add_dependency "railties", ">= 5.0", "< 8.0"
+  s.add_dependency "activerecord", ">= 5.2", "< 8.0"
+  s.add_dependency "railties", ">= 5.2", "< 8.0"
 
   s.add_development_dependency "appraisal", "~> 2.4"
   s.add_development_dependency "bundler", "~> 2.1"
