@@ -4,8 +4,6 @@ class DreamTest < UnreliableTest
   SUBJECTS = %w[fire air water earth life death].freeze
   DREAMER_NAMES = %w[Morpheus Cluracan Mervyn Gilbert Nuala].freeze
   raise ArgumentError, "DreamTest needs at least as many subjects as dreamers" if SUBJECTS.size < DREAMER_NAMES.size
-
-  RESPONSE_COUNT = 10
 end
 
 RSpec.describe Dream do
