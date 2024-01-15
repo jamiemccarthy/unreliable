@@ -25,11 +25,11 @@ RSpec.describe "update_manager" do
       end
     end
     Cat.update_all(name: "bar")
-    expect(Unreliable::SqlTestingData.update_manager_sql).to end_with("ORDER BY RANDOM())")
+    expect(Unreliable::SqlTestingData.update_manager_sql).to end_with(adapter_text("ORDER BY RANDOM())"))
     Cat.where(name: "foo").update_all(name: "bar")
-    expect(Unreliable::SqlTestingData.update_manager_sql).to end_with("ORDER BY RANDOM())")
+    expect(Unreliable::SqlTestingData.update_manager_sql).to end_with(adapter_text("ORDER BY RANDOM())"))
     Cat.where(name: "bar").order(:id).update_all(name: "baz")
-    expect(Unreliable::SqlTestingData.update_manager_sql).to end_with("ORDER BY \"cats\".\"id\" ASC)")
+    expect(Unreliable::SqlTestingData.update_manager_sql).to end_with(adapter_text("ORDER BY \"cats\".\"id\" ASC)"))
   ensure
     module Arel
       class SelectManager
