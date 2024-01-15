@@ -20,7 +20,7 @@ module Unreliable
 end
 
 RSpec.describe "update_manager" do
-  it "in ActiveRecord >= 7, updates by subquery with select in random order",
+  it "in ActiveRecord >= 7, updates by subquery with select",
     skip: ((ActiveRecord::VERSION::MAJOR < 7) ? "test is for ActiveRecord >= 7 only" : false) do
     module Arel
       class SelectManager
@@ -36,8 +36,11 @@ RSpec.describe "update_manager" do
 
     # rubocop:disable Layout/SpaceInsideParens,Layout/DotPosition
 
-    # Single subquery for sqlite/postgresql: "update cats where id in (select cats where name=bar)"
-    # Direct update for mysql: "update cats where name=bar"
+    # Single subquery for sqlite/postgresql:
+    #   "update cats where id in (select cats where name=bar)"
+    # Direct update for mysql:
+    #   "update cats where name=bar"
+
     Cat.where(name: "foo").update_all(name: "bar")
     expect(Unreliable::SqlTestingData.update_manager_sql).
       to end_with(
@@ -49,8 +52,11 @@ RSpec.describe "update_manager" do
         end
       )
 
-    # Double-nested subquery for sqlite/postgresql: "update cats where id in (select cats where id in (select owners where name=baz))"
-    # Single-nested for mysql: "update cats where id in (select owners where name=baz)"
+    # Double-nested subquery for sqlite/postgresql:
+    #   "update cats where id in (select cats where id in (select owners where name=baz))"
+    # Single-nested for mysql:
+    #   "update cats where id in (select owners where name=baz)"
+
     Cat.where( id: Owner.where(name: "bar") ).update_all(name: "baz")
     expect(Unreliable::SqlTestingData.update_manager_sql).
       to end_with(
@@ -62,8 +68,11 @@ RSpec.describe "update_manager" do
         end
       )
 
-    # Single ordered subquery for sqlite/postgresql: "update cats where id in (select cats where name=bar limit ?)"
-    # Direct update for mysql: "update cats where name=baz"
+    # Single ordered subquery for sqlite/postgresql:
+    #   "update cats where id in (select cats where name=bar limit ?)"
+    # Direct update for mysql:
+    #   "update cats where name=baz"
+
     Cat.where(name: "bar").limit(1).update_all(name: "baz")
     expect(Unreliable::SqlTestingData.update_manager_sql).
       to match(
@@ -75,8 +84,10 @@ RSpec.describe "update_manager" do
         end
       )
 
-    # Single ordered subquery: "update cats where id in (select cats where name=bar order by id limit ?)"
+    # Single ordered subquery:
+    #   "update cats where id in (select cats where name=bar order by id limit ?)"
     # The presence of the primary-key order means Unreliable does not apply its own order.
+
     Cat.where(name: "bar").order(:id).limit(1).update_all(name: "baz")
     expect(Unreliable::SqlTestingData.update_manager_sql).
       to match(adapter_text('ORDER BY "cats"\."id" ASC LIMIT '))
