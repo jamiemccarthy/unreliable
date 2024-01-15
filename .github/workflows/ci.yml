@@ -39,6 +39,9 @@ jobs:
     - name: Build
       run: docker compose --progress=plain build --build-arg ruby_version=${{ matrix.ruby-version }} --build-arg activerecord_version=${{ matrix.activerecord-version }}
 
+    - name: Run yamllint
+      run: docker compose run --rm --no-deps app yamllint compose.yaml .standard.yml spec/internal/config/storage.yml spec/internal/config/database.yml .github/workflows/ci.yml .rubocop.yml
+
     - name: Run standardrb
       run: docker compose run --rm --no-deps app bundle exec standardrb
 
