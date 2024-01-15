@@ -15,7 +15,7 @@ Add `unreliable` to your `Gemfile`'s `test` group:
 # Gemfile
 
 group :test do
-  gem "unreliable", "~> 0.1"
+  gem "unreliable", "~> 0.10"
 end
 ```
 
@@ -27,17 +27,26 @@ Here's an [open secret](#references): **relational databases do not guarantee th
 
 If all your ActiveRecord ordering is already unambiguous, congratulations! `unreliable` will have no effect.
 
-But sometimes we think we specified an unambiguous order, but didn't. Maybe we ordered on timestamps, which are usually unique but sometimes not. And the test suite will stay silent as long as our database just happens to return the same order.
+But sometimes... we think we specified an unambiguous order, but we didn't. For example, maybe we ordered on timestamps, which are usually unique but sometimes not.
 
-If ambiguous ordering is fine for your app's purposes, but your tests rely on a specific order, that's a bug in your tests. Your tests are incorrectly failing -- rarely -- which can be confusing and annoying.
+The test suite will stay silent about that, as long as our database just happens to return the same order. That silence is a problem.
 
-Or, if your Rails code relies on that accidental ordering, that's a bug in your app. Your tests are passing when they should be failing.
+If ambiguous ordering is fine for your app's purposes, but your tests rely on a specific order, that's a **bug in your tests**. Your tests are incorrectly failing -- rarely -- which can be confusing and annoying.
+
+Or, if your Rails code relies on that accidental ordering, that's a **bug in your app**. Your tests are passing when they should be failing.
 
 In both cases, `unreliable` exposes the problem by making those tests fail most of the time.
 
 ## Fixing the new failures
 
-When `unreliable` turns up a new test failure, you fix it in one of two ways. Either relax your test so it stops relying on order, or tighten up your app to specify order rigorously. (In my company's app, it was about 50/50.)
+When `unreliable` turns up a new test failure, you fix it in one of two ways.
+
+Either:
+
+ * relax your test so it stops relying on order,
+ * or tighten up your app to specify order rigorously.
+
+In my company's app, it was about 50/50.
 
 ### Relax a test
 
@@ -45,7 +54,7 @@ Take a look at what your test is checking. If you're testing a method or an endp
 
 * Make your test accept all correct answers. For example, sort an array in the method's response before comparing.
 
-* Help your test suite focus on what you're testing. If your fixtures' "latest" element could change because they don't specify a timestamp, that might be a distraction that's not relevant to how your app works, so you could assign timestamps to the fixtures.
+* Help your test suite focus on what you're testing. If your fixtures' "latest" element could change because they don't specify a timestamp, that might be a distraction that's not relevant to how your app works, so you could assign unique timestamps to the fixtures.
 
 This makes your test suite more robust.
 
@@ -53,7 +62,9 @@ If your test suite is checking generated `.to_sql` against known-good SQL text, 
 
 ### Tighten the app
 
-If your app should be returning results in a particular order, and now with `unreliable` it sometimes does not, your test is correct and your app is wrong. Specify order rigorously in your app.
+If your app should be returning results in a particular order, and now with `unreliable` it sometimes does not, your test is correct and your app is wrong.
+
+Specify order rigorously in your app.
 
 Maybe you're testing `Book.reverse_chron.first`, and you've defined that ordering this way:
 
@@ -75,11 +86,17 @@ Or, if `title` is not unique:
   scope :reverse_chron, -> { order(year_published: :desc, title: :desc, id: :desc) }
 ```
 
-The problem in this example is easy to see because many books are published each year. But this error can occur at any time granularity.
+This example's problem is easy to see because many books are published each year.
+
+But this error can occur at any granularity, in time or other data types.
 
 ## Requirements
 
-`unreliable` is tested to support Ruby 2.6 through 3.2, and Rails 5.0 through 7.1.
+`unreliable` is tested on every valid combination of:
+
+ * sqlite, postgresql, and mysql2 adapters
+ * Ruby 2.6 through 3.3
+ * Rails 5.2 through 7.1
 
 `unreliable` depends only on ActiveRecord and Railties. If you have a non-Rails app that uses ActiveRecord, you can still use it.
 
@@ -98,6 +115,8 @@ With `unreliable` installed, every ActiveRecord relation invoked by the test sui
 This means that the `ORDER BY` applies to not just `SELECT` but e.g. `delete_all` and `update_all`. It also applies within subqueries.
 
 The patch is only applied when `Rails.env.test?`, and that boolean is also checked on every invocation, just to make certain it has no effect in any other environment.
+
+The gem has a large test suite that checks for correctness at several abstraction layers inside ActiveRecord. It ensures the correct SQL is generated and that it executes correctly.
 
 ### No dual-purpose environment please
 
@@ -125,7 +144,15 @@ bundle exec rake
 
 The GitHub CI workflow in `.github/` ensures those tests are also run against against every compatible minor version of Ruby. Your PR won't trigger my GitHub project's workflow, but you're welcome to run your own, or ask me to run mine manually.
 
-Testing against ActiveRecord is done with [Combustion](https://github.com/pat/combustion), which stands up a local SQLite database and ActiveRecord-based models for it. This gives more reliable coverage than mocking unit tests within ActiveRecord itself, though I do some of that too. MySQL and Postgres testing are done using docker.
+Testing against ActiveRecord is done with [Combustion](https://github.com/pat/combustion), which stands up a local SQLite database and ActiveRecord-based models for it. This gives more reliable coverage than mocking unit tests within ActiveRecord itself, though I do some of that too.
+
+MySQL and Postgres testing are done using docker. After you spin it up per `compose.yaml`:
+
+```
+RSPEC_ADAPTER=sqlite bundle exec rake
+RSPEC_ADAPTER=postgresql bundle exec rake
+RSPEC_ADAPTER=mysql2 bundle exec rake
+```
 
 ### Experiment
 
