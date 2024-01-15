@@ -24,12 +24,31 @@ RSpec.describe "update_manager" do
         alias_method :compile_update, :testing_compile_update
       end
     end
-    Cat.update_all(name: "bar")
-    expect(Unreliable::SqlTestingData.update_manager_sql).to end_with(adapter_text("ORDER BY RANDOM())"))
+
+    # rubocop:disable Layout/SpaceInsideParens,Layout/DotPosition
+
+    # Single subquery: "update cats where id in (select cats where name=bar)"
     Cat.where(name: "foo").update_all(name: "bar")
-    expect(Unreliable::SqlTestingData.update_manager_sql).to end_with(adapter_text("ORDER BY RANDOM())"))
-    Cat.where(name: "bar").order(:id).update_all(name: "baz")
-    expect(Unreliable::SqlTestingData.update_manager_sql).to end_with(adapter_text("ORDER BY \"cats\".\"id\" ASC)"))
+    expect(Unreliable::SqlTestingData.update_manager_sql).
+      to end_with(adapter_text("ORDER BY RANDOM())"))
+
+    # Double-nested subquery: "update cats where id in (select cats where id in (select owners where name=baz))"
+    Cat.where( id: Owner.where(name: "bar") ).update_all(name: "baz")
+    expect(Unreliable::SqlTestingData.update_manager_sql).
+      to end_with(adapter_text("ORDER BY RANDOM()) ORDER BY RANDOM())"))
+
+    # Single ordered subquery: "update cats where id in (select cats where name=bar order by id limit ?)"
+    # The presence of the primary-key order means Unreliable does not apply its own order.
+    Cat.where(name: "bar").order(:id).limit(1).update_all(name: "baz")
+    expect(Unreliable::SqlTestingData.update_manager_sql).
+      to end_with(adapter_text("ORDER BY \"cats\".\"id\" ASC LIMIT ?)"))
+
+    # Single ordered subquery: "update cats where id in (select cats where name=bar limit ?)"
+    Cat.where(name: "bar").limit(1).update_all(name: "baz")
+    expect(Unreliable::SqlTestingData.update_manager_sql).
+      to end_with(adapter_text("ORDER BY RANDOM() LIMIT ?)"))
+
+    # rubocop:enable Layout/SpaceInsideParens,Layout/DotPosition
   ensure
     module Arel
       class SelectManager
