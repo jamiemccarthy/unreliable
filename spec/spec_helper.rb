@@ -6,7 +6,7 @@ class UnreliableTest
   ORIG_EXTENSION = "orig"
   DATABASE_YML_FILENAME = "spec/internal/config/database.yml"
 
-  def self.find_adapter!
+  def self.find_adapter
     ENV["RSPEC_ADAPTER"].presence || ::UnreliableTest::DEFAULT_ADAPTER
   end
 
@@ -78,7 +78,7 @@ def order_text(sql)
 end
 
 # Set the adapter for this run by copying the appropriate file into place.
-adapter = UnreliableTest.find_adapter!
+adapter = UnreliableTest.find_adapter
 UnreliableTest.assert_valid_adapter!(adapter)
 UnreliableTest.cp_adapter_file(adapter)
 puts "Running RSpec for #{adapter} on ActiveRecord #{ActiveRecord.version} on ruby #{RUBY_VERSION}"
