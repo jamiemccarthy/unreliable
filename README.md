@@ -130,23 +130,13 @@ Thoughts and suggestions are welcome. Please read the code of conduct, then crea
 
 To test locally, see the hint at the top of `compose.yaml` to spin up docker containers.
 
-Run `unreliable`'s linter with:
+After you spin up the containers and open a shell in the app container, run `unreliable`'s linter with:
 
 ```
 standardrb
 ```
 
-Run its tests with:
-
-```
-bundle exec rake
-```
-
-The GitHub CI workflow in `.github/` ensures those tests are also run against against every compatible minor version of Ruby. Your PR won't trigger my GitHub project's workflow, but you're welcome to run your own, or ask me to run mine manually.
-
-Testing against ActiveRecord is done with [Combustion](https://github.com/pat/combustion), which stands up a local SQLite database and ActiveRecord-based models for it. This gives more reliable coverage than mocking unit tests within ActiveRecord itself, though I do some of that too.
-
-MySQL and Postgres testing are done using docker. After you spin it up per `compose.yaml`:
+Run its tests in three separate passes:
 
 ```
 RSPEC_ADAPTER=sqlite bundle exec rake
@@ -154,11 +144,13 @@ RSPEC_ADAPTER=postgresql bundle exec rake
 RSPEC_ADAPTER=mysql2 bundle exec rake
 ```
 
+The GitHub CI workflow in `.github/` ensures those tests are also run against against every compatible minor version of Ruby. Your PR won't trigger my GitHub project's workflow, but you're welcome to run your own, or ask me to run mine manually.
+
 ### Experiment
 
 If you'd like to see `unreliable` in action on a small but real Rails app locally, you can do this:
 
-1. In a directory next to your `unreliable` working directory, create a `.ruby-version` of `2.7.6` and a 2-line `Gemfile`: `source "https://rubygems.org"`, `gem "rails", "~> 7.0"`
+1. In a directory next to your `unreliable` working directory, create a `.ruby-version` of `2.7.8` and a 2-line `Gemfile`: `source "https://rubygems.org"`, `gem "rails", "~> 7.0"`
 2. `bundle install && bundle exec rails new . --force`
 3. `echo 'gem "unreliable", path: "../unreliable"' >> Gemfile`
 4. `bundle install && bundle exec rails generate model post title:string body:text`
@@ -198,11 +190,11 @@ MySQL ([5.6](https://dev.mysql.com/doc/refman/5.6/en/limit-optimization.html), [
 
 > If multiple rows have identical values in the `ORDER BY` columns, the server is free to return those rows in any order, and may do so differently depending on the overall execution plan. In other words, the sort order of those rows is nondeterministic with respect to the nonordered columns.
 
-Postgres ([12](https://www.postgresql.org/docs/12/sql-select.html#SQL-ORDERBY), [13](https://www.postgresql.org/docs/13/sql-select.html#SQL-ORDERBY), [14](https://www.postgresql.org/docs/14/sql-select.html#SQL-ORDERBY), [15](https://www.postgresql.org/docs/15/sql-select.html#SQL-ORDERBY)):
+Postgres ([13](https://www.postgresql.org/docs/13/sql-select.html#SQL-ORDERBY), [14](https://www.postgresql.org/docs/14/sql-select.html#SQL-ORDERBY), [15](https://www.postgresql.org/docs/15/sql-select.html#SQL-ORDERBY), [16](https://www.postgresql.org/docs/16/sql-select.html#SQL-ORDERBY)):
 
 > If two rows are equal according to the leftmost expression, they are compared according to the next expression and so on. If they are equal according to all specified expressions, they are returned in an implementation-dependent order.
 
-SQLite ([3.44](https://www.sqlite.org/lang_select.html#the_order_by_clause)):
+SQLite ([3.45](https://www.sqlite.org/lang_select.html#the_order_by_clause)):
 
 > The order in which two rows for which all ORDER BY expressions evaluate to equal values are returned is undefined.
 

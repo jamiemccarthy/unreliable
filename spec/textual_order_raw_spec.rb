@@ -51,8 +51,10 @@ RSpec.describe "textual order raw" do
     skip: (
       (ActiveRecord.version < Gem::Version.new("5.2") || ActiveRecord.version >= Gem::Version.new("6.0")
       ) ? "test is for ActiveRecord 5.2 only" : false) do
-    # It actually raises ActiveRecord::UnknownAttributeReference, but since that's
-    # not defined in earlier versions of Rails, referencing that would itself raise!
+    # It actually raises ActiveRecord::UnknownAttributeReference, but since
+    # that's not defined in Rails < 5.2, and there's a chance we might
+    # restore Rails 5.0 and 5.1 compatibility at some point in the future,
+    # we don't want to reference that constant if it might not exist.
     # So we name that class by its superclass here.
     expect { Shelf.order(order_text('"shelves"."shelf_id"')).to_sql }.to raise_error(ActiveRecord::ActiveRecordError)
   end

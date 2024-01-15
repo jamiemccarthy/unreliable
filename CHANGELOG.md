@@ -1,8 +1,9 @@
-## Unreliable 0.10.0 (xxxx, 2023) ##
+## Unreliable 0.10.0 (January 15, 2024) ##
 
 ### Changed
 
-* TKTK
+* Rails 5.0 and 5.1 compatibility removed due to bug in interaction with Arel 8
+* Many tests added; tests dockerized; suite runs against SQLite, PostgreSQL, and MySQL
 
 ## Unreliable 0.9.1 (November 21, 2022) ##
 

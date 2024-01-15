@@ -19,7 +19,7 @@ module Unreliable
         arel.order("RAND()")
 
       when "PostgreSQL", "SQLite"
-        # https://www.postgresql.org/docs/13/functions-math.html#FUNCTIONS-MATH-RANDOM-TABLE
+        # https://www.postgresql.org/docs/16/functions-math.html#FUNCTIONS-MATH-RANDOM-TABLE
         # https://www.sqlite.org/lang_corefunc.html#random
         arel.order("RANDOM()")
 
