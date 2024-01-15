@@ -29,7 +29,7 @@ services:
       timeout: 5s
       retries: 10
   postgres:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     environment:
       - POSTGRES_PASSWORD=Password123
     volumes:
