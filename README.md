@@ -15,7 +15,7 @@ Add `unreliable` to your `Gemfile`'s `test` group:
 # Gemfile
 
 group :test do
-  gem "unreliable", "~> 0.1"
+  gem "unreliable", "~> 0.10"
 end
 ```
 
@@ -27,17 +27,26 @@ Here's an [open secret](#references): **relational databases do not guarantee th
 
 If all your ActiveRecord ordering is already unambiguous, congratulations! `unreliable` will have no effect.
 
-But sometimes we think we specified an unambiguous order, but didn't. Maybe we ordered on timestamps, which are usually unique but sometimes not. And the test suite will stay silent as long as our database just happens to return the same order.
+But sometimes... we think we specified an unambiguous order, but we didn't. For example, maybe we ordered on timestamps, which are usually unique but sometimes not.
 
-If ambiguous ordering is fine for your app's purposes, but your tests rely on a specific order, that's a bug in your tests. Your tests are incorrectly failing -- rarely -- which can be confusing and annoying.
+The test suite will stay silent about that, as long as our database just happens to return the same order. That silence is a problem.
 
-Or, if your Rails code relies on that accidental ordering, that's a bug in your app. Your tests are passing when they should be failing.
+If ambiguous ordering is fine for your app's purposes, but your tests rely on a specific order, that's a **bug in your tests**. Your tests are incorrectly failing -- rarely -- which can be confusing and annoying.
+
+Or, if your Rails code relies on that accidental ordering, that's a **bug in your app**. Your tests are passing when they should be failing.
 
 In both cases, `unreliable` exposes the problem by making those tests fail most of the time.
 
 ## Fixing the new failures
 
-When `unreliable` turns up a new test failure, you fix it in one of two ways. Either relax your test so it stops relying on order, or tighten up your app to specify order rigorously. (In my company's app, it was about 50/50.)
+When `unreliable` turns up a new test failure, you fix it in one of two ways.
+
+Either:
+
+ * relax your test so it stops relying on order,
+ * or tighten up your app to specify order rigorously.
+
+In my company's app, it was about 50/50.
 
 ### Relax a test
 
@@ -45,7 +54,7 @@ Take a look at what your test is checking. If you're testing a method or an endp
 
 * Make your test accept all correct answers. For example, sort an array in the method's response before comparing.
 
-* Help your test suite focus on what you're testing. If your fixtures' "latest" element could change because they don't specify a timestamp, that might be a distraction that's not relevant to how your app works, so you could assign timestamps to the fixtures.
+* Help your test suite focus on what you're testing. If your fixtures' "latest" element could change because they don't specify a timestamp, that might be a distraction that's not relevant to how your app works, so you could assign unique timestamps to the fixtures.
 
 This makes your test suite more robust.
 
@@ -53,7 +62,9 @@ If your test suite is checking generated `.to_sql` against known-good SQL text, 
 
 ### Tighten the app
 
-If your app should be returning results in a particular order, and now with `unreliable` it sometimes does not, your test is correct and your app is wrong. Specify order rigorously in your app.
+If your app should be returning results in a particular order, and now with `unreliable` it sometimes does not, your test is correct and your app is wrong.
+
+Specify order rigorously in your app.
 
 Maybe you're testing `Book.reverse_chron.first`, and you've defined that ordering this way:
 
@@ -75,19 +86,23 @@ Or, if `title` is not unique:
   scope :reverse_chron, -> { order(year_published: :desc, title: :desc, id: :desc) }
 ```
 
-The problem in this example is easy to see because many books are published each year. But this error can occur at any time granularity.
+This example's problem is easy to see because many books are published each year.
+
+But this error can occur at any granularity, in time or other data types.
 
 ## Requirements
 
-`unreliable` is tested to support Ruby 2.6 through 3.1, and Rails 5.0 through 7.0.
+`unreliable` is tested on every valid combination of:
 
-As of November 2022, this is all released versions of both that are currently supported, plus several older releases.
+ * sqlite, postgresql, and mysql2 adapters
+ * Ruby 2.6 through 3.3
+ * Rails 5.2 through 7.1
 
 `unreliable` depends only on ActiveRecord and Railties. If you have a non-Rails app that uses ActiveRecord, you can still use it.
 
 ## Implementation
 
-`unreliable` does exactly nothing outside of test environments. There is intentionally no way to enable `unreliable` in production, and there never will be.
+`unreliable` does exactly nothing outside of test environments. There is intentionally no way to enable it in production, and there never will be.
 
 In a Rails test environment, `unreliable` patches ActiveRecord to append a final `ORDER BY` clause, when necessary, that returns results in a random order.
 
@@ -101,47 +116,41 @@ This means that the `ORDER BY` applies to not just `SELECT` but e.g. `delete_all
 
 The patch is only applied when `Rails.env.test?`, and that boolean is also checked on every invocation, just to make certain it has no effect in any other environment.
 
+The gem has a large test suite that checks for correctness at several abstraction layers inside ActiveRecord. It ensures the correct SQL is generated and that it executes correctly.
+
 ### No dual-purpose environment please
 
-Your test environment is just for running your test suite. If you've overloaded the test environment to do any actual work, you'd be frustrated when `unreliable` slows it down and changes its behavior, so don't install it (yet).
+Your test environment is just for running your test suite. If you've overloaded the test environment to do any actual work, you'll be frustrated when `unreliable` slows it down and changes its behavior. Don't do that.
 
 ## Contributing
 
-Thoughts and suggestions are welcome. Please read the code of conduct, then create an issue or pull request on GitHub. If you just have questions, go ahead and open an issue, I'm pretty friendly.
+Thoughts and suggestions are welcome. Please read the code of conduct, then create an issue or pull request on GitHub. If you just have questions, please go ahead and open an issue!
 
 ### Run the gem's tests
 
-To test locally, against the different versions of ActiveRecord, use Ruby 2.7, the only version currently compatible with all the ActiveRecord versions supported. Install the required gems with:
+To test locally, see the hint at the top of `compose.yaml` to spin up docker containers.
+
+After you spin up the containers and open a shell in the app container, run `unreliable`'s linter with:
 
 ```
-gem install bundler
-bundle install
-bundle exec appraisal install
+standardrb
 ```
 
-Run `unreliable`'s linter with:
+Run its tests in three separate passes:
 
 ```
-bundle exec standardrb
+RSPEC_ADAPTER=sqlite bundle exec rake
+RSPEC_ADAPTER=postgresql bundle exec rake
+RSPEC_ADAPTER=mysql2 bundle exec rake
 ```
-
-Then you can run `unreliable`'s tests with:
-
-```
-bundle exec appraisal rake
-```
-
-Appraisal ensures the tests run against every compatible minor version of ActiveRecord.
 
 The GitHub CI workflow in `.github/` ensures those tests are also run against against every compatible minor version of Ruby. Your PR won't trigger my GitHub project's workflow, but you're welcome to run your own, or ask me to run mine manually.
-
-Testing against ActiveRecord is done with [Combustion](https://github.com/pat/combustion), which stands up a local SQLite database and ActiveRecord-based models for it. This gives more reliable coverage than mocking unit tests within ActiveRecord itself, though I do some of that too.
 
 ### Experiment
 
 If you'd like to see `unreliable` in action on a small but real Rails app locally, you can do this:
 
-1. In a directory next to your `unreliable` working directory, create a `.ruby-version` of `2.7.6` and a 2-line `Gemfile`: `source "https://rubygems.org"`, `gem "rails", "~> 7.0"`
+1. In a directory next to your `unreliable` working directory, create a `.ruby-version` of `2.7.8` and a 2-line `Gemfile`: `source "https://rubygems.org"`, `gem "rails", "~> 7.0"`
 2. `bundle install && bundle exec rails new . --force`
 3. `echo 'gem "unreliable", path: "../unreliable"' >> Gemfile`
 4. `bundle install && bundle exec rails generate model post title:string body:text`
@@ -166,8 +175,8 @@ The most common ambiguous ordering is an ORDER BY one column that is not unique,
 But there are other ways you can order a relation but still have your query be ambiguous:
 
 * ORDER BY multiple columns, but with no subset which is unique
-* ORDER BY a column with values that differ only by [character case](https://dev.mysql.com/doc/refman/8.0/en/sorting-rows.html)
-* ORDER BY values that are identical within the [prefix length limit](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_max_sort_length) examined for sorting
+* ORDER BY a column your [pre-Rails-6.1](https://guides.rubyonrails.org/6_1_release_notes.html#active-record-notable-changes) application thought was unique, but currently isn't, due to your non-UNIQUE database column's accent- or case-insensitive [collation](https://dev.mysql.com/doc/refman/8.0/en/charset-general.html)
+* ORDER BY values that are identical only within the [prefix length limit](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_max_sort_length) examined for sorting
 
 `unreliable` ensures correct testing because it appends a random order to each of these cases.
 
@@ -181,11 +190,11 @@ MySQL ([5.6](https://dev.mysql.com/doc/refman/5.6/en/limit-optimization.html), [
 
 > If multiple rows have identical values in the `ORDER BY` columns, the server is free to return those rows in any order, and may do so differently depending on the overall execution plan. In other words, the sort order of those rows is nondeterministic with respect to the nonordered columns.
 
-Postgres ([12](https://www.postgresql.org/docs/12/sql-select.html#SQL-ORDERBY), [13](https://www.postgresql.org/docs/13/sql-select.html#SQL-ORDERBY), [14](https://www.postgresql.org/docs/14/sql-select.html#SQL-ORDERBY)):
+Postgres ([13](https://www.postgresql.org/docs/13/sql-select.html#SQL-ORDERBY), [14](https://www.postgresql.org/docs/14/sql-select.html#SQL-ORDERBY), [15](https://www.postgresql.org/docs/15/sql-select.html#SQL-ORDERBY), [16](https://www.postgresql.org/docs/16/sql-select.html#SQL-ORDERBY)):
 
 > If two rows are equal according to the leftmost expression, they are compared according to the next expression and so on. If they are equal according to all specified expressions, they are returned in an implementation-dependent order.
 
-SQLite ([3.39](https://www.sqlite.org/lang_select.html#the_order_by_clause)):
+SQLite ([3.45](https://www.sqlite.org/lang_select.html#the_order_by_clause)):
 
 > The order in which two rows for which all ORDER BY expressions evaluate to equal values are returned is undefined.
 

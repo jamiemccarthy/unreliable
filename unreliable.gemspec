@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "./lib/unreliable/version"
+require_relative "lib/unreliable/version"
 
 Gem::Specification.new do |s|
   s.name = "unreliable"
@@ -30,14 +30,17 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 2.6"
 
-  s.add_dependency "activerecord", ">= 5.0", "< 8.0"
-  s.add_dependency "railties", ">= 5.0", "< 8.0"
+  s.add_dependency "activerecord", ">= 5.2", "< 8.0"
+  s.add_dependency "railties", ">= 5.2", "< 8.0"
 
   s.add_development_dependency "appraisal", "~> 2.4"
   s.add_development_dependency "bundler", "~> 2.1"
   s.add_development_dependency "combustion", "~> 1.3"
+  s.add_development_dependency "mysql2", "~> 0.5"
+  s.add_development_dependency "pg", "~> 1.5"
   s.add_development_dependency "rake", "~> 13.0"
   s.add_development_dependency "rspec", "~> 3.0"
-  s.add_development_dependency "sqlite3", "~> 1.4"
+  s.add_development_dependency "sqlite3", ((RUBY_VERSION >= "3.2") ? "~> 1.6.9" : "~> 1.5.4")
   s.add_development_dependency "standard", "~> 1.17"
+  s.add_development_dependency "yamllint", "~> 0.0.9"
 end

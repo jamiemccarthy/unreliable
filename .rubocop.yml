@@ -6,6 +6,15 @@ AllCops:
     - 'bin/*'
     - 'gemfiles/*'
 
+# Following this cop's advice makes Appraisal's generated gemfiles too wordy
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
+# Following this cop's advice breaks my sqlite3 add_development_dependency hack
+# to use 1.6 on ruby 3.2
+Gemspec/RubyVersionGlobalsUsage:
+  Enabled: false
+
 Layout/LineLength:
   Max: 120
 
@@ -13,7 +22,12 @@ Metrics/AbcSize:
   Max: 30
 
 Metrics/BlockLength:
-  Max: 30
+  Max: 40
+  Exclude:
+    - spec/execute_queries_spec.rb
+    - spec/model_select_distinct_spec.rb
+    - spec/model_update_arel_10_spec.rb
+    - spec/textual_order_raw_spec.rb
 
 Metrics/CyclomaticComplexity:
   Max: 9
@@ -40,6 +54,10 @@ Layout/SpaceInsideHashLiteralBraces:
 
 Style/Alias:
   Enabled: false
+
+Style/MultilineTernaryOperator:
+  Exclude:
+    - spec/textual_order_raw_spec.rb
 
 Style/QuotedSymbols:
   Enabled: false
