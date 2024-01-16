@@ -11,7 +11,7 @@ module Unreliable
 
       adapter_name = Arel::Table.engine.connection.adapter_name
       return unless Unreliable::Config.enabled?
-      return if is_distinct_on_postgres?(arel, adapter_name)
+      return if distinct_on_postgres?(adapter_name)
       return if from_only_internal_metadata?(arel)
       return if from_one_table_with_ordered_pk?(arel)
 
@@ -31,7 +31,7 @@ module Unreliable
       end
     end
 
-    def is_distinct_on_postgres?(arel, adapter_name)
+    def distinct_on_postgres?(adapter_name)
       distinct_value && adapter_name == "PostgreSQL"
     end
 

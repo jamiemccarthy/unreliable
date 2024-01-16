@@ -25,6 +25,7 @@ Metrics/BlockLength:
   Max: 40
   Exclude:
     - spec/execute_queries_spec.rb
+    - spec/model_select_distinct_spec.rb
     - spec/model_update_arel_10_spec.rb
     - spec/textual_order_raw_spec.rb
 

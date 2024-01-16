@@ -3,19 +3,34 @@
 RSpec.describe Cat do
   it "randomly selects distinctly except on postgres" do
     expect(Cat.distinct.all.to_sql).to end_with(
-      UnreliableTest.find_adapter == "postgresql" ? ' FROM "cats"' : adapter_text("ORDER BY RANDOM()")
+      case UnreliableTest.find_adapter
+      when "postgresql"
+        ' FROM "cats"'
+      else
+        adapter_text("ORDER BY RANDOM()")
+      end
     )
   end
 
   it "randomly selects distinctly from some" do
     expect(Cat.where(name: "foo").distinct.to_sql).to end_with(
-      UnreliableTest.find_adapter == "postgresql" ? %q{ "cats"."name" = 'foo'} : adapter_text("ORDER BY RANDOM()")
+      case UnreliableTest.find_adapter
+      when "postgresql"
+        %q( "cats"."name" = 'foo')
+      else
+        adapter_text("ORDER BY RANDOM()")
+      end
     )
   end
 
   it "adds randomness to existing distinct order" do
     expect(Cat.order(:name).distinct.to_sql).to end_with(
-      UnreliableTest.find_adapter == "postgresql" ? ' ORDER BY "cats"."name" ASC' : adapter_text('ORDER BY "cats"."name" ASC, RANDOM()')
+      case UnreliableTest.find_adapter
+      when "postgresql"
+        ' ORDER BY "cats"."name" ASC'
+      else
+        adapter_text('ORDER BY "cats"."name" ASC, RANDOM()')
+      end
     )
   end
 
