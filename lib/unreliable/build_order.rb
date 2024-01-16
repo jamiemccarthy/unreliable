@@ -9,11 +9,13 @@ module Unreliable
     def build_order(arel)
       super(arel)
 
+      adapter_name = Arel::Table.engine.connection.adapter_name
       return unless Unreliable::Config.enabled?
+      return if is_distinct_on_postgres?(arel, adapter_name)
       return if from_only_internal_metadata?(arel)
       return if from_one_table_with_ordered_pk?(arel)
 
-      case Arel::Table.engine.connection.adapter_name
+      case adapter_name
       when "Mysql2"
         # https://dev.mysql.com/doc/refman/8.0/en/mathematical-functions.html#function_rand
         arel.order("RAND()")
@@ -27,6 +29,10 @@ module Unreliable
         raise ArgumentError, "unknown Arel::Table.engine"
 
       end
+    end
+
+    def is_distinct_on_postgres?(arel, adapter_name)
+      distinct_value && adapter_name == "PostgreSQL"
     end
 
     def from_only_internal_metadata?(arel)
