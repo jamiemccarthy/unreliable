@@ -2,8 +2,9 @@
 
 ### Changed
 
-* Rails 5.0 and 5.1 compatibility removed due to bug in interaction with Arel 8
-* Many tests added; tests dockerized; suite runs against SQLite, PostgreSQL, and MySQL
+* Rails 5.0 and 5.1 compatibility removed due to bug in interaction with Arel 8. This is not a breaking change because it didn't work before. If you must run Rails < 5.2, do not use Unreliable.
+* PostgreSQL bug with SELECT DISTINCT fixed (#10).
+* Many tests added; CI dockerized; test suite runs against SQLite, PostgreSQL, and MySQL (#3).
 
 ## Unreliable 0.9.1 (November 21, 2022) ##
 
