@@ -19,7 +19,7 @@ group :test do
 end
 ```
 
-The next time your test suite runs, it may emit new errors and failures. If so, great!
+And run `bundle install`. Then try running your test suite. If it emits new errors and failures, great!
 
 ## The problem with orders
 
