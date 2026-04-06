@@ -27,6 +27,10 @@ class UnreliableTest
 end
 
 require "bundler"
+# This require "logger" is needed for the Rails 6.1 / Ruby 3.2 combination,
+# which is buggy. Rails never loaded it, Ruby stopped loading it, so if
+# we don't do it manually we get a "uninitialized constant Logger".
+require "logger"
 
 Bundler.require :default, :development
 
