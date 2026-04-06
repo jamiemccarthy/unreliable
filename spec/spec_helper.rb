@@ -89,6 +89,12 @@ puts "Running RSpec for #{adapter} on ActiveRecord #{ActiveRecord.version} on ru
 
 Combustion.initialize! :active_record
 
+if ActiveRecord.gem_version >= Gem::Version.new("7.2")
+  # ActiveSupport::Deprecation singleton was removed in Rails 7.2.
+  # Must be called after Combustion.initialize! (Rails.application not available before).
+  Rails.application.deprecators.each { |d| d.disallowed_warnings = :all }
+end
+
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true

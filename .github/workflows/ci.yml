@@ -10,8 +10,8 @@ jobs:
       max-parallel: 2
       fail-fast: false
       matrix:
-        ruby-version: ['2.6.10', '2.7.8', '3.0.7', '3.1.7', '3.2.11', '3.3.11']
-        activerecord-version: ['5.2', '6.0', '6.1', '7.0', '7.1']
+        ruby-version: ['2.6.10', '2.7.8', '3.0.7', '3.1.7', '3.2.11', '3.3.11', '3.4.9', '4.0.2']
+        activerecord-version: ['5.2', '6.0', '6.1', '7.0', '7.1', '7.2']
         include:
           - ruby-version: '2.6.10'
             debian_version: bullseye
@@ -31,12 +31,25 @@ jobs:
           - ruby-version: '3.3.11'
             debian_version: trixie
             bundler_version: '4.0.9'
+          - ruby-version: '3.4.9'
+            debian_version: trixie
+            bundler_version: '4.0.9'
+          - ruby-version: '4.0.2'
+            debian_version: trixie
+            bundler_version: '4.0.9'
         exclude:
-          # Rails 7's gemspec requires ruby >= 2.7
+          # Rails 7.0/7.1's gemspec requires ruby >= 2.7
           - ruby-version: '2.6.10'
             activerecord-version: '7.0'
           - ruby-version: '2.6.10'
             activerecord-version: '7.1'
+          # Rails 7.2's gemspec requires ruby >= 3.1
+          - ruby-version: '2.6.10'
+            activerecord-version: '7.2'
+          - ruby-version: '2.7.8'
+            activerecord-version: '7.2'
+          - ruby-version: '3.0.7'
+            activerecord-version: '7.2'
           # Rails 5.x is unlikely ever to support ruby >= 3.0
           # https://github.com/rails/rails/issues/40938#issuecomment-751569171
           - ruby-version: '3.0.7'
@@ -46,6 +59,10 @@ jobs:
           - ruby-version: '3.2.11'
             activerecord-version: '5.2'
           - ruby-version: '3.3.11'
+            activerecord-version: '5.2'
+          - ruby-version: '3.4.9'
+            activerecord-version: '5.2'
+          - ruby-version: '4.0.2'
             activerecord-version: '5.2'
 
     steps:
