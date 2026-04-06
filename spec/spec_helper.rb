@@ -58,9 +58,7 @@ def adapter_text(sql)
   case ActiveRecord::Base.connection.adapter_name
   when "Mysql2"
     sql.tr('"', "`").gsub("RANDOM()", "RAND()")
-  when "pg"
-    sql.tr('"', "`")
-  else
+  else # PostgreSQL, SQLite
     sql
   end
 end
