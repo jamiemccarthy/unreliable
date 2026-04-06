@@ -31,10 +31,10 @@ jobs:
 
     steps:
     - name: Cleanup
-      uses: Automodality/action-clean@v1
+      uses: Automodality/action-clean@v1.1.0
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v6
 
     - name: Build
       run: docker compose --progress=plain build --build-arg ruby_version=${{ matrix.ruby-version }} --build-arg activerecord_version=${{ matrix.activerecord-version }}
