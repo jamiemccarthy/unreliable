@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby-version: ['2.6.10', '2.7.8', '3.0.7', '3.1.7', '3.2.11', '3.3.11', '3.4.9', '4.0.2']
-        activerecord-version: ['5.2', '6.0', '6.1', '7.0', '7.1', '7.2']
+        activerecord-version: ['5.2', '6.0', '6.1', '7.0', '7.1', '7.2', '8.0']
         include:
           - ruby-version: '2.6.10'
             debian_version: bullseye
@@ -50,6 +50,15 @@ jobs:
             activerecord-version: '7.2'
           - ruby-version: '3.0.7'
             activerecord-version: '7.2'
+          # Rails 8.0's gemspec requires ruby >= 3.2
+          - ruby-version: '2.6.10'
+            activerecord-version: '8.0'
+          - ruby-version: '2.7.8'
+            activerecord-version: '8.0'
+          - ruby-version: '3.0.7'
+            activerecord-version: '8.0'
+          - ruby-version: '3.1.7'
+            activerecord-version: '8.0'
           # Rails 5.x is unlikely ever to support ruby >= 3.0
           # https://github.com/rails/rails/issues/40938#issuecomment-751569171
           - ruby-version: '3.0.7'
