@@ -13,5 +13,7 @@ gem "sqlite3", RUBY_VERSION >= "3.2" ? "~> 1.6.9" : "~> 1.5.4"
 gem "standard", "~> 1.17"
 gem "yamllint", "~> 0.0.9"
 gem "activerecord", "~> 6.1.0"
+gem "activerecord-trilogy-adapter"
+gem "trilogy"
 
 gemspec path: "../"

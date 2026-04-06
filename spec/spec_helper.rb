@@ -2,7 +2,7 @@
 
 class UnreliableTest
   DEFAULT_ADAPTER = "sqlite"
-  VALID_ADAPTERS = %w[mysql2 postgresql sqlite].freeze
+  VALID_ADAPTERS = %w[mysql2 postgresql sqlite trilogy].freeze
   ORIG_EXTENSION = "orig"
   DATABASE_YML_FILENAME = "spec/internal/config/database.yml"
 
@@ -57,13 +57,11 @@ if ActiveRecord.gem_version >= Gem::Version.new("5.2") && ActiveRecord.gem_versi
   ActiveRecord::ConnectionAdapters::SQLite3Adapter.represent_boolean_as_integer = true
 end
 
-if ActiveRecord.gem_version >= Gem::Version.new("6.1") && ActiveRecord.gem_version < Gem::Version.new("7.2")
+if ActiveRecord.gem_version >= Gem::Version.new("6.1") && ActiveRecord.gem_version < Gem::Version.new("7.1")
   # This causes all Rails deprecation warnings to raise.
-  # Introduced in Rails 6.1. Upper bound is Rails 7.2, where ActiveSupport::Deprecation
-  # was removed entirely (requiring a different API).
-  # combustion 1.4.0 fixed the deprecation warnings it was emitting under Rails 7.1,
-  # which previously forced the upper bound here to < 7.1.
-  # See: https://github.com/pat/combustion/blob/main/HISTORY (v1.4.0)
+  # Introduced in Rails 6.1. Upper bound is Rails 7.1, where this singleton API was
+  # itself deprecated in favor of Rails.application.deprecators (handled below after
+  # Combustion.initialize!).
   ActiveSupport::Deprecation.disallowed_warnings = :all
 end
 
@@ -78,7 +76,7 @@ end
 
 def adapter_text(sql)
   case ActiveRecord::Base.connection.adapter_name
-  when "Mysql2"
+  when "Mysql2", "Trilogy"
     sql.tr('"', "`").gsub("RANDOM()", "RAND()")
   else # PostgreSQL, SQLite
     sql
@@ -90,7 +88,7 @@ end
 
 def order_text(sql)
   case ActiveRecord::Base.connection.adapter_name
-  when "Mysql2"
+  when "Mysql2", "Trilogy"
     sql.tr('"', "`")
   else
     sql
@@ -105,8 +103,9 @@ puts "Running RSpec for #{adapter} on ActiveRecord #{ActiveRecord.version} on ru
 
 Combustion.initialize! :active_record
 
-if ActiveRecord.gem_version >= Gem::Version.new("7.2")
-  # ActiveSupport::Deprecation singleton was removed in Rails 7.2.
+if ActiveRecord.gem_version >= Gem::Version.new("7.1")
+  # Rails.application.deprecators was introduced in Rails 7.1.
+  # In Rails 7.2+, ActiveSupport::Deprecation singleton was removed entirely.
   # Must be called after Combustion.initialize! (Rails.application not available before).
   Rails.application.deprecators.each { |d| d.disallowed_warnings = :all }
 end

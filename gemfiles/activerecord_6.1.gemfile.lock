@@ -2,8 +2,8 @@ PATH
   remote: ..
   specs:
     unreliable (0.10.0)
-      activerecord (>= 5.2, < 8.0)
-      railties (>= 5.2, < 8.0)
+      activerecord (>= 5.2, < 9.0)
+      railties (>= 5.2, < 9.0)
 
 GEM
   remote: https://rubygems.org/
@@ -26,6 +26,9 @@ GEM
     activerecord (6.1.7.10)
       activemodel (= 6.1.7.10)
       activesupport (= 6.1.7.10)
+    activerecord-trilogy-adapter (3.2.0)
+      activerecord (>= 6.0.a, < 7.1.a)
+      trilogy (>= 2.4.0)
     activesupport (6.1.7.10)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
@@ -37,6 +40,7 @@ GEM
       rake
       thor (>= 0.14.0)
     ast (2.4.2)
+    bigdecimal (4.1.1)
     builder (3.3.0)
     combustion (1.5.0)
       activesupport (>= 3.0.0)
@@ -139,6 +143,8 @@ GEM
       lint_roller (~> 1.1)
       rubocop-performance (~> 1.19.1)
     thor (1.5.0)
+    trilogy (2.12.3)
+      bigdecimal
     trollop (2.9.10)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
@@ -155,6 +161,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord (~> 6.1.0)
+  activerecord-trilogy-adapter
   appraisal (~> 2.4)
   bundler (~> 2.1)
   combustion (~> 1.5)
@@ -164,6 +171,7 @@ DEPENDENCIES
   rspec (~> 3.0)
   sqlite3 (~> 1.6.9)
   standard (~> 1.17)
+  trilogy
   unreliable!
   yamllint (~> 0.0.9)
 

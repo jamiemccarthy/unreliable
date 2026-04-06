@@ -107,6 +107,10 @@ jobs:
     - name: Run tests, mysql2
       run: docker compose run --rm app bundle exec rake RSPEC_ADAPTER=mysql2
 
+    - name: Run tests, trilogy
+      if: matrix.activerecord-version != '5.2'
+      run: docker compose run --rm app bundle exec rake RSPEC_ADAPTER=trilogy
+
     - name: Run tests, postgresql
       run: docker compose run --rm app bundle exec rake RSPEC_ADAPTER=postgresql
 

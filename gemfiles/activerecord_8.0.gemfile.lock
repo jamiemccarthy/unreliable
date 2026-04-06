@@ -187,6 +187,8 @@ GEM
     stringio (3.2.0)
     thor (1.5.0)
     timeout (0.6.1)
+    trilogy (2.12.3)
+      bigdecimal
     trollop (2.9.10)
     tsort (0.2.0)
     tzinfo (2.0.6)
@@ -215,8 +217,9 @@ DEPENDENCIES
   rspec (~> 3.0)
   sqlite3 (~> 1.6.9)
   standard (~> 1.17)
+  trilogy
   unreliable!
   yamllint (~> 0.0.9)
 
 BUNDLED WITH
-   2.5.22
+   2.5.23

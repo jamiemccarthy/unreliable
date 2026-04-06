@@ -45,7 +45,7 @@ RSpec.describe "update_manager" do
     expect(Unreliable::SqlTestingData.update_manager_sql).
       to end_with(
         case UnreliableTest.find_adapter
-        when "mysql2"
+        when "mysql2", "trilogy"
           "ORDER BY RAND()"
         else
           adapter_text("ORDER BY RANDOM())")
@@ -61,7 +61,7 @@ RSpec.describe "update_manager" do
     expect(Unreliable::SqlTestingData.update_manager_sql).
       to end_with(
         case UnreliableTest.find_adapter
-        when "mysql2"
+        when "mysql2", "trilogy"
           "ORDER BY RAND()"
         else
           adapter_text("ORDER BY RANDOM()) ORDER BY RANDOM())")
@@ -77,7 +77,7 @@ RSpec.describe "update_manager" do
     expect(Unreliable::SqlTestingData.update_manager_sql).
       to match(
         case UnreliableTest.find_adapter
-        when "mysql2"
+        when "mysql2", "trilogy"
           'ORDER BY RAND\(\) LIMIT '
         else
           adapter_text('ORDER BY RANDOM\(\) LIMIT ')

@@ -16,7 +16,7 @@ module Unreliable
       return if from_one_table_with_ordered_pk?(arel)
 
       case adapter_name
-      when "Mysql2"
+      when "Mysql2", "Trilogy"
         # https://dev.mysql.com/doc/refman/8.0/en/mathematical-functions.html#function_rand
         arel.order("RAND()")
 
