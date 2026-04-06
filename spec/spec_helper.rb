@@ -37,11 +37,13 @@ if ActiveRecord.gem_version >= Gem::Version.new("5.2") && ActiveRecord.gem_versi
   ActiveRecord::ConnectionAdapters::SQLite3Adapter.represent_boolean_as_integer = true
 end
 
-if ActiveRecord.gem_version >= Gem::Version.new("6.1") && ActiveRecord.gem_version < Gem::Version.new("7.1")
+if ActiveRecord.gem_version >= Gem::Version.new("6.1") && ActiveRecord.gem_version < Gem::Version.new("7.2")
   # This causes all Rails deprecation warnings to raise.
-  # We would like to use this feature all the time, but it was only introduced in 6.1,
-  # and combustion <= 1.3.7 throws a deprecation in Rails 7.1. The next release of
-  # combustion should fix it: https://github.com/pat/combustion/pull/131
+  # Introduced in Rails 6.1. Upper bound is Rails 7.2, where ActiveSupport::Deprecation
+  # was removed entirely (requiring a different API).
+  # combustion 1.4.0 fixed the deprecation warnings it was emitting under Rails 7.1,
+  # which previously forced the upper bound here to < 7.1.
+  # See: https://github.com/pat/combustion/blob/main/HISTORY (v1.4.0)
   ActiveSupport::Deprecation.disallowed_warnings = :all
 end
 
