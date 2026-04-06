@@ -26,6 +26,22 @@ class UnreliableTest
   end
 end
 
+# Suppress specific C-extension deprecation warnings from old gems (sqlite3 1.3.x,
+# activerecord 5.2 sqlite3_adapter) that fire at load time and on every query.
+# These use rb_warning() without the :deprecated category tag, so
+# Warning[:deprecated] = false does not suppress them. Prepending onto Warning's
+# singleton class lets super work correctly to pass through all other warnings.
+if RUBY_VERSION >= "2.7"
+  Warning.singleton_class.prepend(Module.new do
+    SUPPRESSED = ["rb_tainted_str_new", "rb_check_safe_obj"].freeze
+
+    def warn(msg, **kwargs)
+      return if SUPPRESSED.any? { |s| msg.include?(s) }
+      super
+    end
+  end)
+end
+
 require "bundler"
 # This require "logger" is needed for the Rails 6.1 / Ruby 3.2 combination,
 # which is buggy. Rails never loaded it, Ruby stopped loading it, so if
