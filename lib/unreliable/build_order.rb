@@ -9,7 +9,7 @@ module Unreliable
     def build_order(arel)
       super(arel)
 
-      adapter_name = Arel::Table.engine.connection.adapter_name
+      adapter_name = unreliable_connection.adapter_name
       return unless Unreliable::Config.enabled?
       return if distinct_on_postgres?(adapter_name)
       return if from_only_internal_metadata?(arel)
@@ -26,7 +26,7 @@ module Unreliable
         arel.order("RANDOM()")
 
       else
-        raise ArgumentError, "unknown Arel::Table.engine"
+        raise ArgumentError, "unreliable: unknown adapter #{adapter_name.inspect}"
 
       end
     end
@@ -57,7 +57,14 @@ module Unreliable
       # Using the SchemaCache minimizes the number of times we have to, e.g. in MySQL,
       # SELECT column_name FROM information_schema.statistics
       # (or in Rails < 6, SELECT column_name FROM information_schema.key_column_usage)
-      [ActiveRecord::Base.connection.schema_cache.primary_keys(arel.froms.first.name)].flatten
+      [unreliable_connection.schema_cache.primary_keys(arel.froms.first.name)].flatten
+    end
+
+    def unreliable_connection
+      # Rails 7.2+ soft-deprecated `connection` in favor of `lease_connection`.
+      # We check for it with klass (not self) because it works on Rails 7.2+ due to
+      # delegation, and it doesn't break Rails 5.2 due to a respond_to_missing bug.
+      klass.respond_to?(:lease_connection) ? lease_connection : connection
     end
 
     def order_columns(arel)
