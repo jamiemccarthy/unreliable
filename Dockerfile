@@ -9,7 +9,7 @@ ARG ruby_version=3.2.2
 ARG activerecord_version=7.1
 ARG bundler_version=2.4.22
 
-FROM ruby:${ruby_version}-bullseye
+FROM ruby:${ruby_version}-trixie
 
 ARG ruby_version
 ARG activerecord_version
