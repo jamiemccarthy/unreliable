@@ -5,15 +5,17 @@
 # docker exec -it udc278 bash
 # docker stop udc278 && docker remove udc278
 
-ARG ruby_version=3.2.2
+ARG ruby_version=3.3.11
 ARG activerecord_version=7.1
-ARG bundler_version=2.4.22
+ARG bundler_version=4.0.9
+ARG debian_version=trixie
 
-FROM ruby:${ruby_version}-trixie
+FROM ruby:${ruby_version}-${debian_version}
 
 ARG ruby_version
 ARG activerecord_version
 ARG bundler_version
+ARG debian_version
 
 ENV WORKDIR=/app
 WORKDIR ${WORKDIR}

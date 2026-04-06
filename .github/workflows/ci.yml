@@ -12,6 +12,25 @@ jobs:
       matrix:
         ruby-version: ['2.6.10', '2.7.8', '3.0.7', '3.1.7', '3.2.11', '3.3.11']
         activerecord-version: ['5.2', '6.0', '6.1', '7.0', '7.1']
+        include:
+          - ruby-version: '2.6.10'
+            debian_version: bullseye
+            bundler_version: '2.4.22'
+          - ruby-version: '2.7.8'
+            debian_version: bullseye
+            bundler_version: '2.4.22'
+          - ruby-version: '3.0.7'
+            debian_version: bullseye
+            bundler_version: '2.5.23'
+          - ruby-version: '3.1.7'
+            debian_version: bookworm
+            bundler_version: '2.6.9'
+          - ruby-version: '3.2.11'
+            debian_version: trixie
+            bundler_version: '4.0.9'
+          - ruby-version: '3.3.11'
+            debian_version: trixie
+            bundler_version: '4.0.9'
         exclude:
           # Rails 7's gemspec requires ruby >= 2.7
           - ruby-version: '2.6.10'
@@ -37,7 +56,7 @@ jobs:
       uses: actions/checkout@v6
 
     - name: Build
-      run: docker compose --progress=plain build --build-arg ruby_version=${{ matrix.ruby-version }} --build-arg activerecord_version=${{ matrix.activerecord-version }}
+      run: docker compose --progress=plain build --build-arg ruby_version=${{ matrix.ruby-version }} --build-arg activerecord_version=${{ matrix.activerecord-version }} --build-arg debian_version=${{ matrix.debian_version }} --build-arg bundler_version=${{ matrix.bundler_version }}
 
     - name: Run yamllint
       run: docker compose run --rm --no-deps app yamllint compose.yaml .standard.yml spec/internal/config/storage.yml spec/internal/config/database.yml .github/workflows/ci.yml .rubocop.yml

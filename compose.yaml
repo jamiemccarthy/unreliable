@@ -9,8 +9,10 @@ services:
     build:
       dockerfile: Dockerfile
       args:
-        - ruby_version=3.0.6
-        - activerecord_version=6.1
+        - ruby_version=3.3.11
+        - activerecord_version=7.1
+        - debian_version=trixie
+        - bundler_version=4.0.9
     depends_on:
       mysql:
         condition: service_healthy
