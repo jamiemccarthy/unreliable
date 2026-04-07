@@ -113,6 +113,19 @@ UnreliableTest.assert_valid_adapter!(adapter)
 UnreliableTest.cp_adapter_file(adapter)
 puts "Running RSpec for #{adapter} on ActiveRecord #{ActiveRecord.version} on ruby #{RUBY_VERSION}"
 
+# Combustion's sql_server.rb calls connection.recreate_database!(name) but
+# the SQL Server adapter never defined that method. Patch it in before
+# Combustion initializes so the database reset step doesn't blow up.
+if adapter == "sqlserver"
+  require "active_record/connection_adapters/sqlserver_adapter"
+  ActiveRecord::ConnectionAdapters::SQLServerAdapter.prepend(Module.new do
+    def recreate_database!(name)
+      execute("IF EXISTS (SELECT name FROM sys.databases WHERE name = N'#{name}') DROP DATABASE [#{name}]")
+      execute("CREATE DATABASE [#{name}]")
+    end
+  end)
+end
+
 Combustion.initialize! :active_record
 
 if ActiveRecord.gem_version >= Gem::Version.new("7.1")
