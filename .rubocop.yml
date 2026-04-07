@@ -55,9 +55,6 @@ Layout/SpaceInsideHashLiteralBraces:
 Style/Alias:
   Enabled: false
 
-Style/CollectionQuerying:
-  Enabled: false
-
 Style/MultilineTernaryOperator:
   Exclude:
     - spec/textual_order_raw_spec.rb
