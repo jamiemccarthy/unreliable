@@ -11,14 +11,15 @@ class UnreliableTest
   end
 
   def self.assert_valid_adapter!(adapter)
-    advice = case adapter
+    advice =
+      case adapter
       when "mysql"
         " (maybe you meant mysql2?)"
       when "postgres", "pg"
         " (maybe you meant postgresql?)"
       else
         ""
-    end
+      end
     raise "RSPEC_ADAPTER '#{adapter}' not valid#{advice}" unless ::UnreliableTest::VALID_ADAPTERS.include? adapter
   end
 
@@ -41,10 +42,9 @@ end
 # singleton class lets super work correctly to pass through all other warnings.
 if RUBY_VERSION >= "2.7"
   Warning.singleton_class.prepend(Module.new do
-    SUPPRESSED = ["rb_tainted_str_new", "rb_check_safe_obj"].freeze
-
     def warn(msg, **kwargs)
-      return if SUPPRESSED.any? { |s| msg.include?(s) }
+      return if %w[rb_tainted_str_new rb_check_safe_obj].any? { |s| msg.include?(s) }
+
       super
     end
   end)
@@ -135,7 +135,7 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = "spec/examples.txt"
   config.warnings = true
   config.raise_errors_for_deprecations!
-  config.default_formatter = "doc" if config.files_to_run.count == 1
+  config.default_formatter = "doc" if config.files_to_run.count.one?
 
   config.after(:suite) do
     UnreliableTest.restore_adapter_file

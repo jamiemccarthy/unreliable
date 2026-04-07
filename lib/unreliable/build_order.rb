@@ -7,7 +7,7 @@ require "active_record/connection_adapters/abstract_adapter"
 module Unreliable
   module BuildOrder
     def build_order(arel)
-      super(arel)
+      super
 
       adapter_name = unreliable_connection.adapter_name
       return unless Unreliable::Config.enabled?
@@ -74,7 +74,7 @@ module Unreliable
     def order_columns(arel)
       from_table_name = arel.froms.first.name
       arel.orders
-        .select { |order| order.is_a? Arel::Nodes::Ordering } # Don't try to parse textual orders
+        .grep(Arel::Nodes::Ordering) # Don't try to parse textual orders
         .map(&:expr)
         .select { |expr| expr.relation.name == from_table_name }
         .map(&:name)
