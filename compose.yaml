@@ -26,7 +26,10 @@ services:
         condition: service_healthy
   mysql:
     platform: linux/amd64
-    image: mysql:8-debian
+    image: mysql:8.0-debian
+    # Trilogy does not support caching_sha2_password (MySQL 8's default) over
+    # plain TCP without TLS. Use mysql_native_password so Trilogy can connect.
+    command: --default-authentication-plugin=mysql_native_password
     environment:
       - MYSQL_ROOT_PASSWORD=Password123
     volumes:
