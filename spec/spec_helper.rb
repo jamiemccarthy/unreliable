@@ -135,7 +135,7 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = "spec/examples.txt"
   config.warnings = true
   config.raise_errors_for_deprecations!
-  config.default_formatter = "doc" if config.files_to_run.count.one?
+  config.default_formatter = "doc" if config.files_to_run.count == 1
 
   config.after(:suite) do
     UnreliableTest.restore_adapter_file
