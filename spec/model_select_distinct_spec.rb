@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe Cat do
-  it "randomly selects distinctly except on postgres" do
+  it "randomly selects distinctly except on postgres and sqlserver" do
     expect(Cat.distinct.all.to_sql).to end_with(
       case UnreliableTest.find_adapter
-      when "postgresql"
-        ' FROM "cats"'
+      when "postgresql", "sqlserver"
+        adapter_text(' FROM "cats"')
       else
         adapter_text("ORDER BY RANDOM()")
       end
@@ -15,8 +15,8 @@ RSpec.describe Cat do
   it "randomly selects distinctly from some" do
     expect(Cat.where(name: "foo").distinct.to_sql).to end_with(
       case UnreliableTest.find_adapter
-      when "postgresql"
-        %q( "cats"."name" = 'foo')
+      when "postgresql", "sqlserver"
+        adapter_text(%q("cats"."name" = 'foo'))
       else
         adapter_text("ORDER BY RANDOM()")
       end
@@ -26,8 +26,8 @@ RSpec.describe Cat do
   it "adds randomness to existing distinct order" do
     expect(Cat.order(:name).distinct.to_sql).to end_with(
       case UnreliableTest.find_adapter
-      when "postgresql"
-        ' ORDER BY "cats"."name" ASC'
+      when "postgresql", "sqlserver"
+        adapter_text(' ORDER BY "cats"."name" ASC')
       else
         adapter_text('ORDER BY "cats"."name" ASC, RANDOM()')
       end

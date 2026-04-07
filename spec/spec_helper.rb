@@ -87,7 +87,7 @@ def adapter_text(sql)
   when "Mysql2", "Trilogy"
     sql.tr('"', "`").gsub("RANDOM()", "RAND()")
   when "SQLServer"
-    sql.gsub(/"([^"]+)"/, '[\\1]').gsub("RANDOM()", "NEWID()")
+    sql.gsub(/"([^"]+)"/, '[\\1]').gsub("RANDOM()", "NEWID()").gsub("= '", "= N'")
   else # PostgreSQL, SQLite
     sql
   end

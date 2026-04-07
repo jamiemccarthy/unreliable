@@ -47,6 +47,9 @@ RSpec.describe "update_manager" do
         case UnreliableTest.find_adapter
         when "mysql2", "trilogy"
           "ORDER BY RAND()"
+        when "sqlserver"
+          # SQL Server requires OFFSET/FETCH to use ORDER BY in a DML subquery
+          "OFFSET 0 ROWS FETCH NEXT #{2**63 - 1} ROWS ONLY"
         else
           adapter_text("ORDER BY RANDOM())")
         end
@@ -63,6 +66,8 @@ RSpec.describe "update_manager" do
         case UnreliableTest.find_adapter
         when "mysql2", "trilogy"
           "ORDER BY RAND()"
+        when "sqlserver"
+          "OFFSET 0 ROWS FETCH NEXT #{2**63 - 1} ROWS ONLY"
         else
           adapter_text("ORDER BY RANDOM()) ORDER BY RANDOM())")
         end

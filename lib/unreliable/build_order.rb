@@ -12,6 +12,7 @@ module Unreliable
       adapter_name = unreliable_connection.adapter_name
       return unless Unreliable::Config.enabled?
       return if distinct_on_postgres?(adapter_name)
+      return if distinct_on_sqlserver?(adapter_name)
       return if from_only_internal_metadata?(arel)
       return if from_one_table_with_ordered_pk?(arel)
 
@@ -37,6 +38,12 @@ module Unreliable
 
     def distinct_on_postgres?(adapter_name)
       distinct_value && adapter_name == "PostgreSQL"
+    end
+
+    def distinct_on_sqlserver?(adapter_name)
+      # SQL Server rejects ORDER BY expressions not in the select list when
+      # DISTINCT is used, so we don't append NEWID() to DISTINCT queries.
+      distinct_value && adapter_name == "SQLServer"
     end
 
     def from_only_internal_metadata?(arel)
