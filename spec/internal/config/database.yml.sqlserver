@@ -1,0 +1,7 @@
+test:
+  adapter: sqlserver
+  host: sqlserver
+  port: 1433
+  database: unreliable_test
+  username: sa
+  password: Password123

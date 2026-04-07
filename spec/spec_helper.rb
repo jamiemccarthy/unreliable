@@ -2,7 +2,7 @@
 
 class UnreliableTest
   DEFAULT_ADAPTER = "sqlite"
-  VALID_ADAPTERS = %w[mysql2 postgresql sqlite trilogy].freeze
+  VALID_ADAPTERS = %w[mysql2 postgresql sqlite trilogy sqlserver].freeze
   ORIG_EXTENSION = "orig"
   DATABASE_YML_FILENAME = "spec/internal/config/database.yml"
 
@@ -11,7 +11,15 @@ class UnreliableTest
   end
 
   def self.assert_valid_adapter!(adapter)
-    raise "RSPEC_ADAPTER '#{adapter}' not valid" unless ::UnreliableTest::VALID_ADAPTERS.include? adapter
+    advice = case adapter
+      when "mysql"
+        " (maybe you meant mysql2?)"
+      when "postgres", "pg"
+        " (maybe you meant postgresql?)"
+      else
+        ""
+    end
+    raise "RSPEC_ADAPTER '#{adapter}' not valid#{advice}" unless ::UnreliableTest::VALID_ADAPTERS.include? adapter
   end
 
   def self.cp_adapter_file(adapter)
@@ -78,6 +86,8 @@ def adapter_text(sql)
   case ActiveRecord::Base.connection.adapter_name
   when "Mysql2", "Trilogy"
     sql.tr('"', "`").gsub("RANDOM()", "RAND()")
+  when "SQLServer"
+    sql.gsub(/"([^"]+)"/, '[\\1]').gsub("RANDOM()", "NEWID()")
   else # PostgreSQL, SQLite
     sql
   end
@@ -90,6 +100,8 @@ def order_text(sql)
   case ActiveRecord::Base.connection.adapter_name
   when "Mysql2", "Trilogy"
     sql.tr('"', "`")
+  when "SQLServer"
+    sql.gsub(/"([^"]+)"/, '[\\1]')
   else
     sql
   end

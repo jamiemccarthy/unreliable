@@ -116,3 +116,6 @@ jobs:
 
     - name: Run tests, sqlite3
       run: docker compose run --rm app bundle exec rake RSPEC_ADAPTER=sqlite
+
+    - name: Run tests, sqlserver
+      run: docker compose run --rm app bundle exec rake RSPEC_ADAPTER=sqlserver

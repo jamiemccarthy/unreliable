@@ -21,7 +21,7 @@ ENV WORKDIR=/app
 WORKDIR ${WORKDIR}
 RUN apt update && \
   apt upgrade -qy && \
-  apt install -qy default-mysql-client postgresql-client less vim && \
+  apt install -qy default-mysql-client postgresql-client freetds-dev less vim && \
   rm -rf /var/lib/apt/lists/*
 
 ENV BUNDLE_GEMFILE="${WORKDIR}/gemfiles/activerecord_${activerecord_version}.gemfile"

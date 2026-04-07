@@ -94,9 +94,11 @@ But this error can occur at any granularity, in time or other data types.
 
 `unreliable` is tested on every valid combination of:
 
- * sqlite, postgresql, and mysql2 adapters
- * Ruby 2.6 through 3.3
- * Rails 5.2 through 7.1
+ * sqlite, postgresql, mysql2, trilogy, and sqlserver adapters
+ * Ruby 2.6 through 4.0
+ * Rails 5.2 through 8.1
+
+SQL Server tests run in CI (x86\_64) only; the SQL Server 2022 Docker image has no arm64 variant and is unstable under QEMU on Apple Silicon.
 
 `unreliable` depends only on ActiveRecord and Railties. If you have a non-Rails app that uses ActiveRecord, you can still use it.
 
@@ -110,11 +112,11 @@ Because it's appended, the existing ordering is not affected unless it is ambigu
 
 With `unreliable` installed, every ActiveRecord relation invoked by the test suite will have any ambiguity replaced with randomness. Tests that rely on the ordering of two records will break half the time. Tests with three or more break most of the time.
 
-`unreliable` patches `ActiveRecord::QueryMethods#build_arel`, the point where an Arel is converted for use, to append an order to the existing order chain. (The patch is applied after ActiveRecord loads, using `ActiveSupport.on_load`, the standard interface since Rails 4.0.) It works with MySQL, Postgres, and SQLite.
+`unreliable` patches `ActiveRecord::Relation#build_order`, the point where ordering is assembled, to append a random-order term to the existing order chain. (The patch is applied after ActiveRecord loads, using `ActiveSupport.on_load`, the standard interface since Rails 4.0.) It works with MySQL, PostgreSQL, SQLite, and SQL Server.
 
-This means that the `ORDER BY` applies to not just `SELECT` but e.g. `delete_all` and `update_all`. It also applies within subqueries.
+Patching `build_order` ensures that the `ORDER BY` applies to not just `SELECT` but e.g. `delete_all` and `update_all`. It also applies within subqueries.
 
-The patch is only applied when `Rails.env.test?`, and that boolean is also checked on every invocation, just to make certain it has no effect in any other environment.
+The patch is only applied when `Rails.env.test?`, so it has zero effect on production. Just to be sure, the environment is also checked on every invocation, to make absolutely certain this code can run only in `test`.
 
 The gem has a large test suite that checks for correctness at several abstraction layers inside ActiveRecord. It ensures the correct SQL is generated and that it executes correctly.
 
@@ -136,15 +138,19 @@ After you spin up the containers and open a shell in the app container, run `unr
 standardrb
 ```
 
-Run its tests in three separate passes:
+Run its tests in separate passes:
 
 ```
 RSPEC_ADAPTER=sqlite bundle exec rake
 RSPEC_ADAPTER=postgresql bundle exec rake
 RSPEC_ADAPTER=mysql2 bundle exec rake
+RSPEC_ADAPTER=trilogy bundle exec rake
+RSPEC_ADAPTER=sqlserver bundle exec rake
 ```
 
-The GitHub CI workflow in `.github/` ensures those tests are also run against against every compatible minor version of Ruby. Your PR won't trigger my GitHub project's workflow, but you're welcome to run your own, or ask me to run mine manually.
+The SQL Server pass requires an x86\_64 host; the SQL Server 2022 Docker image does not run on Apple Silicon.
+
+The GitHub CI workflow in `.github/` ensures those tests are also run against every compatible minor version of Ruby. Your PR won't trigger my GitHub project's workflow, but you're welcome to run your own, or ask me to run mine manually.
 
 ### Experiment
 

@@ -1,5 +1,5 @@
 test:
-  adapter: mysql2
+  adapter: trilogy
   database: unreliable_test
   host: mysql
   username: root

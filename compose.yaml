@@ -1,22 +1,28 @@
 # To build for a version of ruby and active_record, run e.g.:
 
-# docker compose build --build-arg ruby_version=3.0.6 --build-arg activerecord_version=6.1
+# docker compose build --build-arg ruby_version=3.3.11 --build-arg activerecord_version=7.1 --build-arg debian_version=trixie
 # docker compose run --rm app bash
 # docker compose down
+
+# Some debian versions do not support some ruby versions. And you'll have to
+# comment out the sqlserver references to get this to run on Apple Silicon
+# (see README.md for why).
 
 services:
   app:
     build:
       dockerfile: Dockerfile
       args:
-        - ruby_version=3.3.11
-        - activerecord_version=7.1
+        - ruby_version=4.0.2
+        - activerecord_version=8.1
         - debian_version=trixie
         - bundler_version=4.0.9
     depends_on:
       mysql:
         condition: service_healthy
       postgres:
+        condition: service_healthy
+      sqlserver:
         condition: service_healthy
   mysql:
     platform: linux/amd64
@@ -41,6 +47,22 @@ services:
       interval: 2s
       timeout: 5s
       retries: 15
+  sqlserver:
+    # SQL Server 2022 is amd64-only; on Apple Silicon it runs under QEMU which is
+    # unstable for SQL Server. SQL Server tests run in CI (x86_64) but not locally
+    # on Apple Silicon. Use `platform: linux/amd64` explicitly so Docker doesn't
+    # pull a wrong arch on multi-arch hosts.
+    platform: linux/amd64
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Password123
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Password123' -Q 'SELECT 1' -b -C"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 15s
 volumes:
   mysqldata:
   pgdata:

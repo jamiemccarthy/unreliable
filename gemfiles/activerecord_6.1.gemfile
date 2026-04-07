@@ -15,5 +15,7 @@ gem "yamllint", "~> 0.0.9"
 gem "activerecord", "~> 6.1.0"
 gem "activerecord-trilogy-adapter"
 gem "trilogy"
+gem "activerecord-sqlserver-adapter"
+gem "tiny_tds"
 
 gemspec path: "../"

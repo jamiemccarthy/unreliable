@@ -32,6 +32,9 @@ GEM
       activemodel (= 7.1.6)
       activesupport (= 7.1.6)
       timeout (>= 0.4.0)
+    activerecord-sqlserver-adapter (7.1.12)
+      activerecord (~> 7.1.1)
+      tiny_tds
     activesupport (7.1.6)
       base64
       benchmark (>= 0.3)
@@ -190,6 +193,12 @@ GEM
     stringio (3.2.0)
     thor (1.5.0)
     timeout (0.6.1)
+    tiny_tds (3.4.0)
+      bigdecimal (>= 2.0.0)
+    tiny_tds (3.4.0-aarch64-linux-gnu)
+      bigdecimal (>= 2.0.0)
+    tiny_tds (3.4.0-x86_64-linux-gnu)
+      bigdecimal (>= 2.0.0)
     trilogy (2.12.3)
       bigdecimal
     trollop (2.9.10)
@@ -209,6 +218,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord (~> 7.1.0)
+  activerecord-sqlserver-adapter
   appraisal (~> 2.4)
   bundler (~> 2.1)
   combustion (~> 1.5)
@@ -218,9 +228,10 @@ DEPENDENCIES
   rspec (~> 3.0)
   sqlite3 (~> 1.6.9)
   standard (~> 1.17)
+  tiny_tds
   trilogy
   unreliable!
   yamllint (~> 0.0.9)
 
 BUNDLED WITH
-   2.5.23
+   2.5.22

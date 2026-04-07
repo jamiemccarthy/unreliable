@@ -86,3 +86,5 @@ specs.out
 ### combustion
 
 spec/internal/db/*.sqlite
+spec/internal/db/*.sqlite-shm
+spec/internal/db/*.sqlite-wal

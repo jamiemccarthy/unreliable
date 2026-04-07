@@ -20,6 +20,10 @@ module Unreliable
         # https://dev.mysql.com/doc/refman/8.0/en/mathematical-functions.html#function_rand
         arel.order("RAND()")
 
+      when "SQLServer"
+        # https://learn.microsoft.com/en-us/sql/t-sql/functions/newid-transact-sql
+        arel.order("NEWID()")
+
       when "PostgreSQL", "SQLite"
         # https://www.postgresql.org/docs/16/functions-math.html#FUNCTIONS-MATH-RANDOM-TABLE
         # https://www.sqlite.org/lang_corefunc.html#random
