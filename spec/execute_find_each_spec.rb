@@ -30,9 +30,9 @@ RSpec.describe "find_each and in_batches" do
     end
     Cat.find_each(batch_size: 100) { next }
     ActiveSupport::Notifications.unsubscribe(subscription)
-    expect(sqls).to all(satisfy { |sql|
+    expect(sqls).to all(satisfy do |sql|
       !sql.include?("RANDOM()") && !sql.include?("RAND()") && !sql.include?("NEWID()")
-    })
+    end)
   end
 
   it "in_batches does not append random order" do
@@ -42,8 +42,8 @@ RSpec.describe "find_each and in_batches" do
     end
     Cat.in_batches(of: 100) { next }
     ActiveSupport::Notifications.unsubscribe(subscription)
-    expect(sqls).to all(satisfy { |sql|
+    expect(sqls).to all(satisfy do |sql|
       !sql.include?("RANDOM()") && !sql.include?("RAND()") && !sql.include?("NEWID()")
-    })
+    end)
   end
 end
