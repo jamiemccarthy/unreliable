@@ -56,7 +56,9 @@ RSpec.describe "textual order raw" do
     # restore Rails 5.0 and 5.1 compatibility at some point in the future,
     # we don't want to reference that constant if it might not exist.
     # So we name that class by its superclass here.
-    expect { Shelf.order(adapter_quotes('"shelves"."shelf_id"')).to_sql }.to raise_error(ActiveRecord::ActiveRecordError)
+    expect { Shelf.order(adapter_quotes('"shelves"."shelf_id"')).to_sql }.to raise_error(
+      ActiveRecord::ActiveRecordError
+    )
   end
 
   it "raises (in 5.2) on non-Arel-escaped quoted column name",
