@@ -22,6 +22,6 @@ RSpec.describe Unreliable::Config, "thread safety" do
       barrier.pop # wait for the other thread
     end
 
-    expect(other_thread_sql).to include(adapter_text("RANDOM()"))
+    expect(other_thread_sql).to include(adapter_rand("RANDOM()"))
   end
 end

@@ -3,19 +3,19 @@
 RSpec.describe "or queries" do
   it "randomly selects with or" do
     expect(Cat.where(name: "foo").or(Cat.where(name: "bar")).to_sql).to end_with(
-      adapter_text("ORDER BY RANDOM()")
+      adapter_rand("ORDER BY RANDOM()")
     )
   end
 
   it "adds randomness to existing order with or" do
     expect(Cat.where(name: "foo").or(Cat.where(name: "bar")).order(:name).to_sql).to end_with(
-      adapter_text('ORDER BY "cats"."name" ASC, RANDOM()')
+      adapter_rand('ORDER BY "cats"."name" ASC, RANDOM()')
     )
   end
 
   it "does not randomize when or query is ordered by primary key" do
     expect(Cat.where(name: "foo").or(Cat.where(name: "bar")).order(:id).to_sql).to end_with(
-      adapter_text('ORDER BY "cats"."id" ASC')
+      adapter_rand('ORDER BY "cats"."id" ASC')
     )
   end
 

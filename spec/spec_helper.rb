@@ -84,7 +84,7 @@ end
 # Convert the sqlite3 version of the text that each test is `expect`ing to see,
 # into the text that the adapter would produce.
 
-def adapter_text(sql)
+def adapter_rand(sql)
   case ActiveRecord::Base.connection.adapter_name
   when "Mysql2", "Trilogy"
     sql.tr('"', "`").gsub("RANDOM()", "RAND()")
@@ -108,7 +108,7 @@ end
 # ActiveRecord checks textual .order() arguments to ensure they match the adapter.
 # This converts our test's text to match. See spec/textual_order_spec.rb for more.
 
-def order_text(sql)
+def adapter_quotes(sql)
   case ActiveRecord::Base.connection.adapter_name
   when "Mysql2", "Trilogy"
     sql.tr('"', "`")

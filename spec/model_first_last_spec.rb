@@ -7,13 +7,13 @@
 RSpec.describe "first and last" do
   it "does not randomize the query equivalent to .first" do
     expect(Cat.order(:id).limit(1).to_sql).to end_with(
-      "#{adapter_text('ORDER BY "cats"."id" ASC')} #{adapter_limit(1)}"
+      "#{adapter_rand('ORDER BY "cats"."id" ASC')} #{adapter_limit(1)}"
     )
   end
 
   it "does not randomize the query equivalent to .last" do
     expect(Cat.order(id: :desc).limit(1).to_sql).to end_with(
-      "#{adapter_text('ORDER BY "cats"."id" DESC')} #{adapter_limit(1)}"
+      "#{adapter_rand('ORDER BY "cats"."id" DESC')} #{adapter_limit(1)}"
     )
   end
 

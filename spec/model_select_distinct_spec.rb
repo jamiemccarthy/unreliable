@@ -5,9 +5,9 @@ RSpec.describe Cat do
     expect(Cat.distinct.all.to_sql).to end_with(
       case UnreliableTest.find_adapter
       when "postgresql", "sqlserver"
-        adapter_text(' FROM "cats"')
+        adapter_rand(' FROM "cats"')
       else
-        adapter_text("ORDER BY RANDOM()")
+        adapter_rand("ORDER BY RANDOM()")
       end
     )
   end
@@ -16,9 +16,9 @@ RSpec.describe Cat do
     expect(Cat.where(name: "foo").distinct.to_sql).to end_with(
       case UnreliableTest.find_adapter
       when "postgresql", "sqlserver"
-        adapter_text(%q("cats"."name" = 'foo'))
+        adapter_rand(%q("cats"."name" = 'foo'))
       else
-        adapter_text("ORDER BY RANDOM()")
+        adapter_rand("ORDER BY RANDOM()")
       end
     )
   end
@@ -27,9 +27,9 @@ RSpec.describe Cat do
     expect(Cat.order(:name).distinct.to_sql).to end_with(
       case UnreliableTest.find_adapter
       when "postgresql", "sqlserver"
-        adapter_text(' ORDER BY "cats"."name" ASC')
+        adapter_rand(' ORDER BY "cats"."name" ASC')
       else
-        adapter_text('ORDER BY "cats"."name" ASC, RANDOM()')
+        adapter_rand('ORDER BY "cats"."name" ASC, RANDOM()')
       end
     )
   end

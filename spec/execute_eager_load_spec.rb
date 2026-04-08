@@ -17,36 +17,36 @@ RSpec.describe "eager_load, preload, includes" do
   # preload/includes (no conditions) to_sql shows only the main query.
 
   it "eager_load appends random order on has_one" do
-    expect(Dreamer.eager_load(:dream).to_sql).to end_with(adapter_text("ORDER BY RANDOM()"))
+    expect(Dreamer.eager_load(:dream).to_sql).to end_with(adapter_rand("ORDER BY RANDOM()"))
   end
 
   it "eager_load appends random order on has_many" do
-    expect(Owner.eager_load(:cats).to_sql).to end_with(adapter_text("ORDER BY RANDOM()"))
+    expect(Owner.eager_load(:cats).to_sql).to end_with(adapter_rand("ORDER BY RANDOM()"))
   end
 
   it "preload main query appends random order" do
-    expect(Dreamer.preload(:dream).to_sql).to end_with(adapter_text("ORDER BY RANDOM()"))
+    expect(Dreamer.preload(:dream).to_sql).to end_with(adapter_rand("ORDER BY RANDOM()"))
   end
 
   it "preload main query does not append random order when ordered by primary key" do
     expect(Dreamer.preload(:dream).order(:dreamer_id).to_sql).to end_with(
-      adapter_text('ORDER BY "dreamers"."dreamer_id" ASC')
+      adapter_rand('ORDER BY "dreamers"."dreamer_id" ASC')
     )
   end
 
   it "includes (no conditions) main query appends random order" do
-    expect(Owner.includes(:cats).to_sql).to end_with(adapter_text("ORDER BY RANDOM()"))
+    expect(Owner.includes(:cats).to_sql).to end_with(adapter_rand("ORDER BY RANDOM()"))
   end
 
   it "includes (no conditions) main query does not append random order when ordered by primary key" do
     expect(Owner.includes(:cats).order(:id).to_sql).to end_with(
-      adapter_text('ORDER BY "owners"."id" ASC')
+      adapter_rand('ORDER BY "owners"."id" ASC')
     )
   end
 
   it "includes (with association conditions) appends random order" do
     expect(Owner.includes(:cats).where(cats: {name: "foo"}).to_sql).to end_with(
-      adapter_text("ORDER BY RANDOM()")
+      adapter_rand("ORDER BY RANDOM()")
     )
   end
 

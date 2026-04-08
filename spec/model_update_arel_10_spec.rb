@@ -52,7 +52,7 @@ RSpec.describe "update_manager" do
           # the trailing ) closes the IN(...) subquery.
           "OFFSET 0 ROWS FETCH NEXT #{(2**63) - 1} ROWS ONLY)"
         else
-          adapter_text("ORDER BY RANDOM())")
+          adapter_rand("ORDER BY RANDOM())")
         end
       )
 
@@ -70,7 +70,7 @@ RSpec.describe "update_manager" do
         when "sqlserver"
           "OFFSET 0 ROWS FETCH NEXT #{(2**63) - 1} ROWS ONLY)"
         else
-          adapter_text("ORDER BY RANDOM()) ORDER BY RANDOM())")
+          adapter_rand("ORDER BY RANDOM()) ORDER BY RANDOM())")
         end
       )
 
@@ -88,7 +88,7 @@ RSpec.describe "update_manager" do
         when "sqlserver"
           'ORDER BY NEWID\(\) OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY\)'
         else
-          adapter_text('ORDER BY RANDOM\(\) LIMIT ')
+          adapter_rand('ORDER BY RANDOM\(\) LIMIT ')
         end
       )
 
@@ -103,7 +103,7 @@ RSpec.describe "update_manager" do
         when "sqlserver"
           'ORDER BY \[cats\]\.\[id\] ASC OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY\)'
         else
-          adapter_text('ORDER BY "cats"\."id" ASC LIMIT ')
+          adapter_rand('ORDER BY "cats"\."id" ASC LIMIT ')
         end
       )
 

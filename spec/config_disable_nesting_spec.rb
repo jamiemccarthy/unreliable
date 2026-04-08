@@ -2,7 +2,7 @@
 
 RSpec.describe Unreliable::Config do
   it "restores state after nested disable blocks" do
-    expect(Cat.all.to_sql).to end_with(adapter_text("ORDER BY RANDOM()"))
+    expect(Cat.all.to_sql).to end_with(adapter_rand("ORDER BY RANDOM()"))
 
     Unreliable::Config.disable do
       expect(Cat.all.to_sql).to_not include("RANDOM()")
@@ -19,6 +19,6 @@ RSpec.describe Unreliable::Config do
     end
 
     # Re-enabled after outer block
-    expect(Cat.all.to_sql).to end_with(adapter_text("ORDER BY RANDOM()"))
+    expect(Cat.all.to_sql).to end_with(adapter_rand("ORDER BY RANDOM()"))
   end
 end

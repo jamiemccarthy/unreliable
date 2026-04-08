@@ -6,11 +6,11 @@
 
 RSpec.describe "group and having" do
   it "randomly selects with group" do
-    expect(Cat.group(:name).to_sql).to end_with(adapter_text("ORDER BY RANDOM()"))
+    expect(Cat.group(:name).to_sql).to end_with(adapter_rand("ORDER BY RANDOM()"))
   end
 
   it "randomly selects with group and having" do
-    expect(Cat.group(:name).having("count(*) > 0").to_sql).to end_with(adapter_text("ORDER BY RANDOM()"))
+    expect(Cat.group(:name).having("count(*) > 0").to_sql).to end_with(adapter_rand("ORDER BY RANDOM()"))
   end
 
   it "executes group with count correctly" do
