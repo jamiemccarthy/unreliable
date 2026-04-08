@@ -11,6 +11,7 @@ ActiveRecord::Schema.define do
   create_table "cats" do |t|
     t.string "name"
     t.timestamp "updated_at"
+    t.references :owner
   end
 
   # Explicit primary key
@@ -27,7 +28,6 @@ ActiveRecord::Schema.define do
   # Association with cats, where primary keys have same names
   create_table "owners" do |t|
     t.string :name
-    t.references :cat
   end
 
   # Two-column primary key index
