@@ -21,7 +21,7 @@ RSpec.describe "model_indexes_joins" do
   end
 
   it "randomly selects from dreamer has_one ordered dream" do
-    expect(Dreamer.joins(:dream).order("dreamers.id": :desc).all.to_sql).to end_with(adapter_text(", RANDOM()"))
-    expect(Dreamer.joins(:dream).order(:"dreams.id").all.to_sql).to end_with(adapter_text(", RANDOM()"))
+    expect(Dreamer.joins(:dream).order("dreamers.dreamer_id": :desc).all.to_sql).to end_with(adapter_text(", RANDOM()"))
+    expect(Dreamer.joins(:dream).order(:"dreams.dream_id").all.to_sql).to end_with(adapter_text(", RANDOM()"))
   end
 end
