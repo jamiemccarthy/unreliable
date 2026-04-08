@@ -66,10 +66,12 @@ if ActiveRecord.gem_version >= Gem::Version.new("5.2") && ActiveRecord.gem_versi
 end
 
 if ActiveRecord.gem_version >= Gem::Version.new("6.1") && ActiveRecord.gem_version < Gem::Version.new("7.1")
-  # This causes all Rails deprecation warnings to raise.
-  # Introduced in Rails 6.1. Upper bound is Rails 7.1, where this singleton API was
-  # itself deprecated in favor of Rails.application.deprecators (handled below after
-  # Combustion.initialize!).
+  # This causes all Rails deprecation warnings to raise, which we want, to be sure
+  # this gem is not emitting warnings in any version of Rails.
+  # This setting was introduced in Rails 6.1. Upper bound is Rails 7.1,
+  # where this singleton API was itself deprecated in favor of
+  # Rails.application.deprecators. See below for that "other half" of this
+  # (it's further below because it must be called after Combustion.initialize!).
   ActiveSupport::Deprecation.disallowed_warnings = :all
 end
 
@@ -132,6 +134,7 @@ if ActiveRecord.gem_version >= Gem::Version.new("7.1")
   # Rails.application.deprecators was introduced in Rails 7.1.
   # In Rails 7.2+, ActiveSupport::Deprecation singleton was removed entirely.
   # Must be called after Combustion.initialize! (Rails.application not available before).
+  # See Deprecation.disallowed_warnings above for the "other half" of this.
   Rails.application.deprecators.each { |d| d.disallowed_warnings = :all }
 end
 
