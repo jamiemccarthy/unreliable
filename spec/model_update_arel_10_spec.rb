@@ -86,7 +86,7 @@ RSpec.describe "update_manager" do
         when "mysql2", "trilogy"
           'ORDER BY RAND\(\) LIMIT '
         when "sqlserver"
-          'ORDER BY NEWID\(\) OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY\)'
+          'ORDER BY NEWID\(\) OFFSET 0 ROWS FETCH NEXT @\d+ ROWS ONLY\)'
         else
           adapter_rand('ORDER BY RANDOM\(\) LIMIT ')
         end
@@ -101,7 +101,7 @@ RSpec.describe "update_manager" do
       to match(
         case UnreliableTest.find_adapter
         when "sqlserver"
-          'ORDER BY \[cats\]\.\[id\] ASC OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY\)'
+          'ORDER BY \[cats\]\.\[id\] ASC OFFSET 0 ROWS FETCH NEXT @\d+ ROWS ONLY\)'
         else
           adapter_rand('ORDER BY "cats"\."id" ASC LIMIT ')
         end
