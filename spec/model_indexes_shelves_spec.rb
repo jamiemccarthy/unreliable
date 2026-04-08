@@ -30,4 +30,10 @@ RSpec.describe "model_indexes_shelves" do
       adapter_text('ORDER BY "shelves"."shelf_id" ASC, "shelves"."shelf_position" ASC')
     )
   end
+
+  it "nonrandomly selects from shelves ordered by position and id (reversed column order)" do
+    expect(Shelf.order(:shelf_position, :shelf_id).to_sql).to end_with(
+      adapter_text('ORDER BY "shelves"."shelf_position" ASC, "shelves"."shelf_id" ASC')
+    )
+  end
 end

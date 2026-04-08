@@ -7,15 +7,15 @@ module Unreliable
     end
 
     def self.enabled?
-      @enabled && Rails.env.test?
+      @enabled && !Thread.current[:unreliable_disabled] && Rails.env.test?
     end
 
     def self.disable
-      prev_enabled = @enabled
-      @enabled = false
+      was_disabled = Thread.current[:unreliable_disabled]
+      Thread.current[:unreliable_disabled] = true
       yield
     ensure
-      @enabled = prev_enabled
+      Thread.current[:unreliable_disabled] = was_disabled
     end
   end
 end
