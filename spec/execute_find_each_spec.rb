@@ -28,9 +28,11 @@ RSpec.describe "find_each and in_batches" do
     subscription = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
       sqls << payload[:sql] if payload[:sql].include?("cats")
     end
-    Cat.find_each(batch_size: 100) { }
+    Cat.find_each(batch_size: 100) { next }
     ActiveSupport::Notifications.unsubscribe(subscription)
-    expect(sqls).to all(satisfy { |sql| !sql.include?("RANDOM()") && !sql.include?("RAND()") && !sql.include?("NEWID()") })
+    expect(sqls).to all(satisfy { |sql|
+      !sql.include?("RANDOM()") && !sql.include?("RAND()") && !sql.include?("NEWID()")
+    })
   end
 
   it "in_batches does not append random order" do
@@ -38,8 +40,10 @@ RSpec.describe "find_each and in_batches" do
     subscription = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
       sqls << payload[:sql] if payload[:sql].include?("cats")
     end
-    Cat.in_batches(of: 100) { }
+    Cat.in_batches(of: 100) { next }
     ActiveSupport::Notifications.unsubscribe(subscription)
-    expect(sqls).to all(satisfy { |sql| !sql.include?("RANDOM()") && !sql.include?("RAND()") && !sql.include?("NEWID()") })
+    expect(sqls).to all(satisfy { |sql|
+      !sql.include?("RANDOM()") && !sql.include?("RAND()") && !sql.include?("NEWID()")
+    })
   end
 end
