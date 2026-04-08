@@ -95,6 +95,16 @@ def adapter_text(sql)
   end
 end
 
+# SQL Server uses OFFSET/FETCH instead of LIMIT.
+
+def adapter_limit(num)
+  if ActiveRecord::Base.connection.adapter_name == "SQLServer"
+    "OFFSET 0 ROWS FETCH NEXT #{num} ROWS ONLY"
+  else
+    "LIMIT #{num}"
+  end
+end
+
 # ActiveRecord checks textual .order() arguments to ensure they match the adapter.
 # This converts our test's text to match. See spec/textual_order_spec.rb for more.
 

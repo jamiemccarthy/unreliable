@@ -48,8 +48,9 @@ RSpec.describe "update_manager" do
         when "mysql2", "trilogy"
           "ORDER BY RAND()"
         when "sqlserver"
-          # SQL Server requires OFFSET/FETCH to use ORDER BY in a DML subquery
-          "OFFSET 0 ROWS FETCH NEXT #{(2**63) - 1} ROWS ONLY"
+          # SQL Server requires OFFSET/FETCH to use ORDER BY in a DML subquery;
+          # the trailing ) closes the IN(...) subquery.
+          "OFFSET 0 ROWS FETCH NEXT #{(2**63) - 1} ROWS ONLY)"
         else
           adapter_text("ORDER BY RANDOM())")
         end
@@ -67,7 +68,7 @@ RSpec.describe "update_manager" do
         when "mysql2", "trilogy"
           "ORDER BY RAND()"
         when "sqlserver"
-          "OFFSET 0 ROWS FETCH NEXT #{(2**63) - 1} ROWS ONLY"
+          "OFFSET 0 ROWS FETCH NEXT #{(2**63) - 1} ROWS ONLY)"
         else
           adapter_text("ORDER BY RANDOM()) ORDER BY RANDOM())")
         end
@@ -84,6 +85,8 @@ RSpec.describe "update_manager" do
         case UnreliableTest.find_adapter
         when "mysql2", "trilogy"
           'ORDER BY RAND\(\) LIMIT '
+        when "sqlserver"
+          'ORDER BY NEWID\(\) OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY\)'
         else
           adapter_text('ORDER BY RANDOM\(\) LIMIT ')
         end
@@ -95,7 +98,14 @@ RSpec.describe "update_manager" do
 
     Cat.where(name: "bar").order(:id).limit(1).update_all(name: "baz")
     expect(Unreliable::SqlTestingData.update_manager_sql).
-      to match(adapter_text('ORDER BY "cats"\."id" ASC LIMIT '))
+      to match(
+        case UnreliableTest.find_adapter
+        when "sqlserver"
+          'ORDER BY \[cats\]\.\[id\] ASC OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY\)'
+        else
+          adapter_text('ORDER BY "cats"\."id" ASC LIMIT ')
+        end
+      )
 
     # rubocop:enable Layout/SpaceInsideParens,Layout/DotPosition
   ensure
