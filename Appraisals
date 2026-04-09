@@ -24,9 +24,11 @@ appraise "activerecord-6.0" do
   gem "trilogy"
   gem "activerecord-sqlserver-adapter"
   gem "tiny_tds"
-  gem "mutex_m" # removed from Ruby default gems in Ruby 3.4; needed by ActiveSupport 6.x
-  gem "base64"  # removed from Ruby default gems in Ruby 3.4; needed by ActiveSupport 6.x
-  gem "benchmark" # removed from Ruby bundled gems in Ruby 4.0; needed by ActiveSupport 6.x
+  # Gems removed from Ruby's default/bundled set that ActiveSupport 6.x requires:
+  gem "mutex_m"   # removed in Ruby 3.4
+  gem "base64"    # removed in Ruby 3.4
+  gem "benchmark" # removed in Ruby 4.0
+  gem "logger"    # removed in Ruby 4.0
 end
 
 appraise "activerecord-6.1" do
@@ -35,9 +37,11 @@ appraise "activerecord-6.1" do
   gem "trilogy"
   gem "activerecord-sqlserver-adapter"
   gem "tiny_tds"
-  gem "mutex_m" # removed from Ruby default gems in Ruby 3.4; needed by ActiveSupport 6.x
-  gem "base64"  # removed from Ruby default gems in Ruby 3.4; needed by ActiveSupport 6.x
-  gem "benchmark" # removed from Ruby bundled gems in Ruby 4.0; needed by ActiveSupport 6.x
+  # Gems removed from Ruby's default/bundled set that ActiveSupport 6.x requires:
+  gem "mutex_m"   # removed in Ruby 3.4
+  gem "base64"    # removed in Ruby 3.4
+  gem "benchmark" # removed in Ruby 4.0
+  gem "logger"    # removed in Ruby 4.0
 end
 
 appraise "activerecord-7.0" do

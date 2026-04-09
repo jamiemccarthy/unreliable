@@ -60,6 +60,7 @@ GEM
     json (2.6.3)
     language_server-protocol (3.17.0.3)
     lint_roller (1.1.0)
+    logger (1.7.0)
     loofah (2.25.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -178,6 +179,7 @@ DEPENDENCIES
   benchmark
   bundler (~> 2.1)
   combustion (~> 1.5)
+  logger
   mutex_m
   mysql2 (~> 0.5)
   ostruct
