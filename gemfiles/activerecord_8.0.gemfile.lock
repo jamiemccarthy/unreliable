@@ -91,14 +91,21 @@ GEM
     nokogiri (1.19.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    nokogiri (1.19.2-aarch64-linux-gnu)
+      racc (~> 1.4)
     nokogiri (1.19.2-arm64-darwin)
       racc (~> 1.4)
+    nokogiri (1.19.2-x86_64-linux-gnu)
+      racc (~> 1.4)
+    ostruct (0.6.3)
     parallel (1.28.0)
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
     pg (1.6.3)
+    pg (1.6.3-aarch64-linux)
     pg (1.6.3-arm64-darwin)
+    pg (1.6.3-x86_64-linux)
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
@@ -173,8 +180,11 @@ GEM
       rubocop-ast (>= 1.47.1, < 2.0)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
-    sqlite3 (1.6.9)
+    sqlite3 (2.9.2)
       mini_portile2 (~> 2.8.0)
+    sqlite3 (2.9.2-aarch64-linux-gnu)
+    sqlite3 (2.9.2-arm64-darwin)
+    sqlite3 (2.9.2-x86_64-linux-gnu)
     standard (1.54.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
@@ -192,6 +202,10 @@ GEM
     timeout (0.6.1)
     tiny_tds (3.4.0)
       bigdecimal (>= 2.0.0)
+    tiny_tds (3.4.0-aarch64-linux-gnu)
+      bigdecimal (>= 2.0.0)
+    tiny_tds (3.4.0-x86_64-linux-gnu)
+      bigdecimal (>= 2.0.0)
     trilogy (2.12.3)
       bigdecimal
     trollop (2.9.10)
@@ -208,8 +222,10 @@ GEM
     zeitwerk (2.7.5)
 
 PLATFORMS
+  aarch64-linux
   arm64-darwin-25
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   activerecord (~> 8.0.0)
@@ -218,10 +234,11 @@ DEPENDENCIES
   bundler (~> 2.1)
   combustion (~> 1.5)
   mysql2 (~> 0.5)
+  ostruct
   pg (~> 1.5)
   rake (~> 13.0)
   rspec (~> 3.0)
-  sqlite3 (~> 1.6.9)
+  sqlite3 (~> 2.1)
   standard (~> 1.17)
   tiny_tds
   trilogy

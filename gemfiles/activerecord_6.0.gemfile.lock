@@ -64,6 +64,7 @@ GEM
     method_source (1.1.0)
     mini_portile2 (2.8.9)
     minitest (5.27.0)
+    mutex_m (0.3.0)
     mysql2 (0.5.5)
     nokogiri (1.19.2-aarch64-linux-gnu)
       racc (~> 1.4)
@@ -71,6 +72,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.2-x86_64-linux-gnu)
       racc (~> 1.4)
+    ostruct (0.6.3)
     parallel (1.23.0)
     parser (3.2.2.4)
       ast (~> 2.4.1)
@@ -172,7 +174,9 @@ DEPENDENCIES
   appraisal (~> 2.4)
   bundler (~> 2.1)
   combustion (~> 1.5)
+  mutex_m
   mysql2 (~> 0.5)
+  ostruct
   pg (~> 1.5)
   rake (~> 13.0)
   rspec (~> 3.0)

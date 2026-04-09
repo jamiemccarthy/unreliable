@@ -18,5 +18,6 @@ gem "activerecord-trilogy-adapter"
 gem "trilogy"
 gem "activerecord-sqlserver-adapter"
 gem "tiny_tds"
+gem "mutex_m"
 
 gemspec path: "../"
