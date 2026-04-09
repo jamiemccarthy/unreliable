@@ -43,6 +43,8 @@ GEM
       rake
       thor (>= 0.14.0)
     ast (2.4.2)
+    base64 (0.3.0)
+    benchmark (0.5.0)
     bigdecimal (4.1.1)
     builder (3.3.0)
     combustion (1.5.0)
@@ -172,6 +174,8 @@ DEPENDENCIES
   activerecord-sqlserver-adapter
   activerecord-trilogy-adapter
   appraisal (~> 2.4)
+  base64
+  benchmark
   bundler (~> 2.1)
   combustion (~> 1.5)
   mutex_m
