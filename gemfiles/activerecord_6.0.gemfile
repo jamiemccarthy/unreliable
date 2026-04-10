@@ -21,5 +21,6 @@ gem "tiny_tds"
 gem "mutex_m"
 gem "base64"
 gem "benchmark"
+gem "logger"
 
 gemspec path: "../"
