@@ -40,7 +40,7 @@ end
 # These use rb_warning() without the :deprecated category tag, so
 # Warning[:deprecated] = false does not suppress them. Prepending onto Warning's
 # singleton class lets super work correctly to pass through all other warnings.
-if RUBY_VERSION >= "2.7"
+if RUBY_VERSION >= "2.7" && RUBY_VERSION < "3.0"
   Warning.singleton_class.prepend(Module.new do
     def warn(msg, **kwargs)
       return if %w[rb_tainted_str_new rb_check_safe_obj].any? { |s| msg.include?(s) }
