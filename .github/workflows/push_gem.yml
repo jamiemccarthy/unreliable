@@ -16,11 +16,10 @@ jobs:
 
     steps:
       # Set up
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          bundler-cache: true
           ruby-version: ruby
 
       # Release
