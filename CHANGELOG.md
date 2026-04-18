@@ -1,3 +1,23 @@
+## Unreliable 1.0.0 (April 18, 2026) ##
+
+### Fixed
+
+* Fixed crash on Rails 7.2+ caused by removal of `Arel::Table.engine` — replaced with `lease_connection` helper.
+* `Config.disable` is now thread-safe — uses `Thread.current` instead of toggling a global flag, so parallel test runners don't interfere with each other.
+
+### Added
+
+* SQL Server support — queries get `ORDER BY NEWID()`; DISTINCT queries are skipped (same rationale as PostgreSQL).
+* Trilogy MySQL client support alongside `mysql2`.
+* Rails 7.2, 8.0, and 8.1 compatibility; upper version bound raised to `< 9.0`.
+* Ruby 3.4 and 4.0 added to the CI matrix.
+* Many new specs: eager loading, `first`/`last`, `limit`, `reorder`, `group`/`having`, `or` queries, `pluck`/`exists?`/aggregates, `find_each`, and thread safety.
+
+### Changed
+
+* Development dependencies moved from gemspec to Gemfile.
+* Suppressed C-extension deprecation warnings from sqlite3 1.3.x on Ruby 2.7 (#4).
+
 ## Unreliable 0.10.0 (January 15, 2024) ##
 
 ### Changed
