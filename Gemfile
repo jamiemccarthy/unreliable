@@ -5,7 +5,7 @@ source "https://rubygems.org"
 gemspec
 
 gem "appraisal", "~> 2.4"
-gem "bundler", "~> 2.1"
+gem "bundler", ">= 2.1"
 gem "combustion", "~> 1.5"
 gem "mysql2", "~> 0.5"
 gem "ostruct"
