@@ -1,3 +1,9 @@
+## Unreliable 1.0.1 (June 4, 2026) ##
+
+### Changed
+
+* Administrative changes to how the gem is built; no changes to the gem itself.
+
 ## Unreliable 1.0.0 (April 18, 2026) ##
 
 ### Fixed
