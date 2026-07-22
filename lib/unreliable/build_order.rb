@@ -37,13 +37,23 @@ module Unreliable
     end
 
     def distinct_on_postgres?(adapter_name)
-      distinct_value && adapter_name == "PostgreSQL"
+      distinct_query? && adapter_name == "PostgreSQL"
     end
 
     def distinct_on_sqlserver?(adapter_name)
       # SQL Server rejects ORDER BY expressions not in the select list when
       # DISTINCT is used, so we don't append NEWID() to DISTINCT queries.
-      distinct_value && adapter_name == "SQLServer"
+      distinct_query? && adapter_name == "SQLServer"
+    end
+
+    def distinct_query?
+      # `.distinct` sets distinct_value, but a raw "DISTINCT ..." / "DISTINCT ON (...)"
+      # written into `.select` does not. SQL only allows a statement-level DISTINCT as
+      # the leading keyword of the select clause, so we detect it at the start of a
+      # select fragment (an aggregate's inner `count(DISTINCT x)` is never at the start).
+      # A false positive only forgoes randomization; a miss would append an ORDER BY that
+      # PostgreSQL and SQL Server reject for DISTINCT queries.
+      distinct_value || select_values.any? { |value| value.to_s.match?(/\A\s*DISTINCT\b/i) }
     end
 
     def from_only_internal_metadata?(arel)
