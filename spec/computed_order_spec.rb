@@ -40,7 +40,9 @@ RSpec.describe "computed order" do
   end
 
   it "randomly selects when ordered by an arithmetic expression (Grouping)" do
-    expect(Cat.order((Cat.arel_table[:id] + 1).desc).to_sql).to end_with(
+    # (attr + 1) is an Arel::Nodes::Grouping, which does not mix in .desc on
+    # ActiveRecord 5.2, so wrap it in a Descending node directly.
+    expect(Cat.order(Arel::Nodes::Descending.new(Cat.arel_table[:id] + 1)).to_sql).to end_with(
       adapter_rand('ORDER BY ("cats"."id" + 1) DESC, RANDOM()')
     )
   end
