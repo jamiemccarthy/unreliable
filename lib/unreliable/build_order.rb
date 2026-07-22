@@ -83,6 +83,7 @@ module Unreliable
       arel.orders
         .grep(Arel::Nodes::Ordering) # Don't try to parse textual orders
         .map(&:expr)
+        .grep(Arel::Attributes::Attribute) # Skip computed expressions
         .select { |expr| expr.relation.name == from_table_name }
         .map(&:name)
         .map(&:to_s) # In Rails < 5.2, the order column names are symbols; >= 5.2, strings
