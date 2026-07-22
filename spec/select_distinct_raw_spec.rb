@@ -23,7 +23,7 @@ RSpec.describe "raw DISTINCT in select" do
   end
 
   it "does not append a randomizing order to a raw DISTINCT ON select on postgres",
-    skip: (UnreliableTest.find_adapter == "postgresql" ? false : "DISTINCT ON is PostgreSQL-only syntax") do
+    skip: ((UnreliableTest.find_adapter == "postgresql") ? false : "DISTINCT ON is PostgreSQL-only syntax") do
     expect(Cat.select("DISTINCT ON (name) *").to_sql).to end_with(
       adapter_rand('SELECT DISTINCT ON (name) * FROM "cats"')
     )
@@ -52,7 +52,7 @@ RSpec.describe "raw DISTINCT in select" do
   end
 
   it "executes a raw DISTINCT ON select without a server error",
-    skip: (UnreliableTest.find_adapter == "postgresql" ? false : "DISTINCT ON is PostgreSQL-only syntax") do
+    skip: ((UnreliableTest.find_adapter == "postgresql") ? false : "DISTINCT ON is PostgreSQL-only syntax") do
     expect { Cat.select("DISTINCT ON (name) *").load }.not_to raise_error
   end
 end
