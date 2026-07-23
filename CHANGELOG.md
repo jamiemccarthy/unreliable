@@ -1,3 +1,10 @@
+## Unreliable 1.0.2 (July 22, 2026) ##
+
+### Fixed
+
+* Postgres bugfix when using textual DISTINCT
+* Postgres bugfix when using computed columns
+
 ## Unreliable 1.0.1 (June 4, 2026) ##
 
 ### Changed
