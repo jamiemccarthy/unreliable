@@ -15,7 +15,7 @@ Add `unreliable` to your `Gemfile`'s `test` group:
 # Gemfile
 
 group :test do
-  gem "unreliable", "~> 0.10"
+  gem "unreliable", "~> 1.0"
 end
 ```
 
@@ -124,6 +124,38 @@ The gem has a large test suite that checks for correctness at several abstractio
 
 Your test environment is just for running your test suite. If you've overloaded the test environment to do any actual work, you'll be frustrated when `unreliable` slows it down and changes its behavior. Don't do that.
 
+## Compared to Rails' `shuffle_unordered_selects`
+
+Rails 8.2 adds a built-in option aimed at the same problem:
+
+```ruby
+# config/environments/test.rb
+config.active_record.shuffle_unordered_selects = true
+```
+
+It's worth turning on, but it isn't a replacement for `unreliable`, because the two work at different layers.
+
+Rails shuffles the rows in Ruby after the database returns them, and only for queries that Active Record built itself and that have no `ORDER BY` at all. `unreliable` appends a random term to the `ORDER BY` in the SQL, so the database breaks ties before it applies any `LIMIT`.
+
+That difference decides what each one catches:
+
+| | `unreliable` | `shuffle_unordered_selects` |
+|---|---|---|
+| Multi-row `SELECT` with no `ORDER BY` | Yes | Yes |
+| Ties in an ambiguous `ORDER BY`, like `order(:created_at)` | Yes | No: any `ORDER BY` turns it off |
+| Which rows a `LIMIT` picks: `take`, `find_by`, `has_one`, `order(...).first`, pagination | Yes | No: the rows are already chosen |
+| Association loading and `find_by` (served by `ActiveRecord::StatementCache`) | Yes | No |
+| Subqueries, and `delete_all` / `update_all` with a `limit` | Yes | No |
+| `DISTINCT` queries on PostgreSQL and SQL Server | No | Yes |
+| Raw SQL strings | No | No |
+| Generated SQL and `to_sql` left unchanged | No | Yes |
+| Cost per query | A database sort | An in-memory shuffle |
+| Database adapters | MySQL, PostgreSQL, SQLite, SQL Server | Any |
+| Rails versions | Tested on 5.2 through 8.1 | 8.2 and later |
+| Environments | Test only | Any (off by default) |
+
+On Rails 8.2 you can use both. Since `unreliable` gives almost every query an `ORDER BY`, the Rails option mostly stays out of its way, and it covers the queries `unreliable` leaves alone, such as `DISTINCT` on PostgreSQL and SQL Server.
+
 ## Contributing
 
 Thoughts and suggestions are welcome. Please read the code of conduct, then create an issue or pull request on GitHub. If you just have questions, please go ahead and open an issue!
@@ -206,4 +238,5 @@ SQLite ([3.45](https://www.sqlite.org/lang_select.html#the_order_by_clause)):
 
 ## See also
 
-[chaotic_order](https://rubygems.org/gems/chaotic_order)
+* [chaotic_order](https://rubygems.org/gems/chaotic_order), a similar gem
+* [pg_disorder](https://github.com/viralpraxis/pg_disorder), a PostgreSQL extension
